@@ -1,0 +1,42 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(Rigidbody))]
+public class PlayerController : MonoBehaviour
+{
+    [SerializeField] float moveSpeed = 5.0f;
+    [SerializeField] float rotationSpeed = 10.0f;
+
+    private Vector2 moveInput;
+    private Rigidbody rb;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    public void OnMove()
+    {
+        var playerInput = GetComponent<PlayerInput>();
+        moveInput = playerInput.actions["Move"].ReadValue<Vector2>();
+    }
+
+    void FixedUpdate()
+    {
+        // WASD always maps directly to world axes (XZ plane)
+        Vector3 move = new Vector3(-moveInput.x, 0, -moveInput.y);
+
+        if (move.sqrMagnitude > 0.01f)
+        {
+            move.Normalize();
+
+            // Move in world space (ignores capsule's facing)
+            Vector3 targetPos = rb.position + move * moveSpeed * Time.fixedDeltaTime;
+            rb.MovePosition(targetPos);
+
+            // Rotate to face direction of movement
+            Quaternion targetRot = Quaternion.LookRotation(move, Vector3.up);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
+        }
+    }
+}
