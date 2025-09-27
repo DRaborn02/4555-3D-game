@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Club
   m_EditorClassIdentifier: 
   itemName: Club
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 6b033ccf768eac8488646e2982b1b011, type: 3}
   pickupPrefab: {fileID: 6225125735990664276, guid: b1c06f3f706bc8a41b64d9c82d728111, type: 3}
   heldPrefab: {fileID: 6225125735990664276, guid: b1c06f3f706bc8a41b64d9c82d728111, type: 3}
   type: 1

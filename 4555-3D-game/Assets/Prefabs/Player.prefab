@@ -124,9 +124,10 @@ GameObject:
   - component: {fileID: 8114306741436435840}
   - component: {fileID: 8842233470390844485}
   - component: {fileID: 3069596806241812566}
+  - component: {fileID: 4973831175569075189}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -302,6 +303,7 @@ MonoBehaviour:
   dashSpeed: 5
   dashDuration: 0.1
   dashCooldown: 2
+  npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   item: {fileID: 0}
 --- !u!114 &3069596806241812566
 MonoBehaviour:
@@ -391,3 +393,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 759720993748729663, guid: b1c06f3f706bc8a41b64d9c82d728111, type: 3}
   m_PrefabInstance: {fileID: 6225871195693113088}
   m_PrefabAsset: {fileID: 0}
+=======
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0.08225429, g: 0.015686274, b: 1, a: 1}
+--- !u!114 &4973831175569075189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116887955583915299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abf97dc2cfd0bf44b9041564c1eda46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHalfHearts: 7
+  currentHalfHearts: 7
+  playerController: {fileID: 8842233470390844485}
