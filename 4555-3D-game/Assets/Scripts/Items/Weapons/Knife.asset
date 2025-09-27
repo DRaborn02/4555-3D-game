@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2c5000b3afe1114cb104c81cfd65cfb, type: 3}
-  m_Name: Club
+  m_Name: Knife
   m_EditorClassIdentifier: 
-  itemName: Club
+  itemName: Knife
   icon: {fileID: 0}
-  pickupPrefab: {fileID: 6225125735990664276, guid: b1c06f3f706bc8a41b64d9c82d728111, type: 3}
-  heldPrefab: {fileID: 6225125735990664276, guid: b1c06f3f706bc8a41b64d9c82d728111, type: 3}
-  type: 1
-  damage: 2
-  secondaryDamage: 3
-  swingSpeed: 2
-  cooldown: 2
-  secondaryCooldown: 8
+  pickupPrefab: {fileID: 0}
+  type: 0
+  damage: 0
+  secondaryDamage: 0
+  swingSpeed: 0
+  cooldown: 0
+  secondaryCooldown: 0
+  heldPrefab: {fileID: 0}

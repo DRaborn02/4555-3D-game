@@ -6,6 +6,8 @@ public class Inventory : MonoBehaviour
     private Item[] slots;
     private Item equipmentSlot;
     private int currentIndex = 0;
+    private GameObject currentlyHeldItem;
+    public Transform handTransform; // Transform where the item will be held
 
     void Awake()
     {
@@ -68,6 +70,10 @@ public class Inventory : MonoBehaviour
         while (slots[currentIndex] == null && currentIndex != startIndex);
 
         Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+        if (slots[currentIndex] != null)
+        {
+            equipItem();
+        }
     }
 
     public void OnPreviousSlot()
@@ -86,6 +92,10 @@ public class Inventory : MonoBehaviour
         while (slots[currentIndex] == null && currentIndex != startIndex);
 
         Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+        if (slots[currentIndex] != null)
+        {
+            equipItem();
+        }
     }
 
     private bool IsInventoryEmpty()
@@ -98,4 +108,35 @@ public class Inventory : MonoBehaviour
     }
 
     public Item GetCurrentItem() => slots[currentIndex];
+
+    public void equipItem()
+    {
+        if (currentlyHeldItem != null)
+        {
+            Destroy(currentlyHeldItem);
+        }
+        
+        Item item = GetCurrentItem();
+        Debug.Log("Equipped item: " + item.itemName);
+
+        // Instantiate held prefab (if any) under the hand transform
+        GameObject instance = null;
+        if (item.heldPrefab != null && handTransform != null)
+        {
+            instance = Instantiate(item.heldPrefab, handTransform);
+
+            instance.transform.SetParent(handTransform);
+            instance.transform.localPosition = Vector3.zero;
+            instance.transform.localRotation = Quaternion.identity;
+
+            currentlyHeldItem = instance;
+        }
+
+        // Notify the player controller of the equipped item and the spawned instance
+        PlayerController playerController = GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.SetEquippedItem(item, instance);
+        }
+    }
 }
