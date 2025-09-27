@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashSpeed = 5.0f;
     [SerializeField] float dashDuration = 0.1f;
     [SerializeField] float dashCooldown = 2.0f;
+    [SerializeField] private Color npcHighlightColor = Color.white; 
+
     private Collider[] results = new Collider[5]; // buffer for overlap checks
 
     private Vector2 moveInput;
@@ -58,9 +60,24 @@ public class PlayerController : MonoBehaviour
 
     void OnInteract()
     {
+
         Collider[] hits = Physics.OverlapSphere(transform.position, interactRange);
         foreach (var hit in hits)
         {
+
+
+            if (hit.CompareTag("NPC")) 
+            {
+
+                Renderer rend = hit.GetComponent<Renderer>();
+                if (rend != null)
+                {
+                    rend.material.color = npcHighlightColor;
+                }
+                return;
+            }
+
+            
             Pickup pickup = hit.GetComponent<Pickup>();
             if (pickup != null)
             {
