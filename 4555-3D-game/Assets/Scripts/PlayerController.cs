@@ -33,6 +33,13 @@ public class PlayerController : MonoBehaviour
         inventory = GetComponent<Inventory>();
     }
 
+    void Start()
+    {
+        var input = GetComponent<PlayerInput>();
+        var health = GetComponent<PlayerHealth>();
+        PlayerUIManager.Instance.AssignUI(inventory, health, input.playerIndex);
+    }
+
     public void OnMove()
     {
         var playerInput = GetComponent<PlayerInput>();

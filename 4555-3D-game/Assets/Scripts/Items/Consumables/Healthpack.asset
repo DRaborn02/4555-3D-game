@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Healthpack
   m_EditorClassIdentifier: 
   itemName: Healthpack
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: f684ef4186750d0409c0e214385f47e6, type: 3}
   pickupPrefab: {fileID: 5794160188686241007, guid: b25b6dee74285e1489b9643540f2fcc2, type: 3}
   healthGain: 2
