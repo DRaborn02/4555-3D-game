@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 761999666836676709}
   - component: {fileID: 8114306741436435840}
   - component: {fileID: 8842233470390844485}
-  - component: {fileID: 8587760168784424493}
+  - component: {fileID: 3069596806241812566}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -295,7 +295,8 @@ MonoBehaviour:
   moveSpeed: 5
   rotationSpeed: 10
   interactRange: 2
---- !u!114 &8587760168784424493
+  item: {fileID: 0}
+--- !u!114 &3069596806241812566
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,4 +308,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872b67edf6c2dd44ebea65f9f23ac8fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSlots: 3
+  defaultSlotCount: 3

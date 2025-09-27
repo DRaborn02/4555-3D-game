@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855822ecca5ce614eab62f40f982f164, type: 3}
   m_Name: Healthpack
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: Healthpack
   icon: {fileID: 0}
-  healthGain: 0
+  pickupPrefab: {fileID: 5794160188686241007, guid: b25b6dee74285e1489b9643540f2fcc2, type: 3}
+  healthGain: 2

@@ -52,16 +52,49 @@ public class Inventory : MonoBehaviour
         Debug.Log("Dropped " + item.itemName);
     }
 
-    public void NextSlot()
+    public void OnNextSlot()
     {
-        currentIndex = (currentIndex + 1) % slots.Length;
-        Debug.Log("Switched to slot " + currentIndex);
+        if (IsInventoryEmpty())
+        {
+            Debug.Log("Inventory is empty.");
+            return;
+        }
+
+        int startIndex = currentIndex;
+        do
+        {
+            currentIndex = (currentIndex + 1) % slots.Length;
+        }
+        while (slots[currentIndex] == null && currentIndex != startIndex);
+
+        Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
     }
 
-    public void PreviousSlot()
+    public void OnPreviousSlot()
     {
-        currentIndex = (currentIndex - 1 + slots.Length) % slots.Length;
-        Debug.Log("Switched to slot " + currentIndex);
+        if (IsInventoryEmpty())
+        {
+            Debug.Log("Inventory is empty.");
+            return;
+        }
+
+        int startIndex = currentIndex;
+        do
+        {
+            currentIndex = (currentIndex - 1 + slots.Length) % slots.Length;
+        }
+        while (slots[currentIndex] == null && currentIndex != startIndex);
+
+        Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+    }
+
+    private bool IsInventoryEmpty()
+    {
+        foreach (var slot in slots)
+        {
+            if (slot != null) return false;
+        }
+        return true;
     }
 
     public Item GetCurrentItem() => slots[currentIndex];
