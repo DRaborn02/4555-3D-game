@@ -2,17 +2,20 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.Progress;
 using System.Collections;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    public Animator animator;
+
     [SerializeField] float moveSpeed = 5.0f;
     [SerializeField] float rotationSpeed = 10.0f;
     [SerializeField] private float interactRange = 2f;
     [SerializeField] float jumpHeight = 5.0f;
     [SerializeField] float jumpCooldown = 1.0f;
-    [SerializeField] float dashSpeed = 5.0f;
-    [SerializeField] float dashDuration = 0.1f;
+    [SerializeField] float dashSpeed = 10.0f;
+    [SerializeField] float dashDuration = 0.2f;
     [SerializeField] float dashCooldown = 2.0f;
     [SerializeField] private Color npcHighlightColor = Color.white; 
 
@@ -22,13 +25,24 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Inventory inventory;
     [SerializeField] private Item item;
+    private Item currentlyEquippedItem;
+    private GameObject currentlyEquippedObject;
+    private GameObject heldItemPrefab;
     private float jumpInput;
     private bool canJump = true;
     private float dashInput;
     private bool dashRequested = false;
     private bool canDash = true;
     private bool isDashing = false;
+    private float attackInput;
+    private float weaponDamage;
+    private float attackCooldown;
+    private bool canAttack = true;
 
+    private float secondaryAttackInput;
+    private float secondaryWeaponDamage;
+    private float secondaryCooldown;
+    private bool canSecondaryAttack = true;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -98,9 +112,57 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void SetEquippedItem(Item newItem, GameObject instance)
+    {
+        if (currentlyEquippedObject != null && currentlyEquippedObject != instance)
+        {
+            Destroy(currentlyEquippedObject);
+        }
+
+        currentlyEquippedItem = newItem;
+        item = newItem; 
+        currentlyEquippedObject = instance;
+
+        Debug.Log("Equipped item: " + (currentlyEquippedItem != null ? currentlyEquippedItem.itemName : "none"));
+
+        if (currentlyEquippedItem is Weapon weapon)
+        {
+            Debug.Log("Equipped weapon: " + weapon.itemName);
+            weaponDamage = weapon.damage;
+            attackCooldown = weapon.cooldown;
+            secondaryWeaponDamage = weapon.secondaryDamage;
+            secondaryCooldown = weapon.secondaryCooldown;
+            heldItemPrefab = weapon.heldPrefab;
+        }
+        else
+        {
+            // Clear weapon stats if unequipped
+            weaponDamage = 0f;
+            attackCooldown = 0f;
+            secondaryWeaponDamage = 0f;
+            secondaryCooldown = 0f;
+            heldItemPrefab = null;
+        }
+    }
+
+    public void OnAttack()
+    {
+        var playerInput = GetComponent<PlayerInput>();
+        attackInput = playerInput.actions["Attack"].ReadValue<float>();
+        //Debug.Log("Attack was pressed");
+    }
+
+    public void OnSecondaryAttack()
+    {
+        var playerInput = GetComponent<PlayerInput>();
+        secondaryAttackInput = playerInput.actions["SecondaryAttack"].ReadValue<float>();
+        //Debug.Log("Secondary Attack was pressed");
+    }
+
     void FixedUpdate()
     {
         if (isDashing) return; // Prevent movement while dashing
+
 
         // WASD always maps directly to world axes (XZ plane)
         Vector3 move = new Vector3(-moveInput.x, 0, -moveInput.y);
@@ -137,6 +199,74 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(Dash());
             }
             dashRequested = false;
+        }
+
+        if (attackInput > 0)
+        {
+            if (currentlyEquippedItem is Weapon weapon && canAttack)
+            {
+                Debug.Log("Attacking with " + weapon.itemName + " of type " + weapon.type);
+
+                // Implement attack logic based on weapon type
+                if (weapon.type == Weapon.WeaponType.LightMelee)
+                {
+                    // Light melee attack logic
+                    Debug.Log("Performing light melee attack.");
+                    LightMeleeAttack();
+                }
+                else if (weapon.type == Weapon.WeaponType.HeavyMelee)
+                {
+                    // Heavy melee attack logic
+                    Debug.Log("Performing heavy melee attack.");
+                    HeavyMeleeAttack();
+                }
+                else if (weapon.type == Weapon.WeaponType.Ranged)
+                {
+                    // Ranged attack logic
+                    Debug.Log("Performing ranged attack.");
+                    RangedAttack();
+                }
+                attackInput = 0; // Reset attack input after processing
+                StartCoroutine(AttackCooldown());
+            }
+            else
+            {
+                canAttack = false;
+            }
+        }
+
+        if (secondaryAttackInput > 0)
+        {
+            if (currentlyEquippedItem is Weapon weapon && canSecondaryAttack)
+            {
+                Debug.Log("Performing secondary attack with " + weapon.itemName);
+
+                // Implement secondary attack logic based on weapon type
+                if (weapon.type == Weapon.WeaponType.LightMelee)
+                {
+                    // Light melee secondary attack logic
+                    Debug.Log("Performing light melee secondary attack.");
+                    SecondaryLMAttack();
+                }
+                else if (weapon.type == Weapon.WeaponType.HeavyMelee)
+                {
+                    // Heavy melee secondary attack logic
+                    Debug.Log("Performing heavy melee secondary attack.");
+                    SecondaryHMAttack();
+                }
+                else if (weapon.type == Weapon.WeaponType.Ranged)
+                {
+                    // Ranged secondary attack logic
+                    Debug.Log("Performing ranged secondary attack.");
+                    SecondaryRangedAttack();
+                }
+                secondaryAttackInput = 0; // Reset secondary attack input after processing
+                StartCoroutine(SecondaryCooldown());
+            }
+            else
+            {
+                canSecondaryAttack = false;
+            }
         }
     }
 
@@ -179,5 +309,94 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    private void LightMeleeAttack()
+    {
+        //animator.SetTrigger("LightMeleeAttack");
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.0f);
+        foreach (Collider enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                // Apply damage to enemies within range
+                Debug.Log("Hit " + enemy.name);
+                Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+            }
+        }
+    }
+
+    private void HeavyMeleeAttack()
+    {
+       //animator.SetTrigger("HeavyMeleeAttack");
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.5f);
+        foreach (Collider enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                // Apply damage to enemies within range
+                Debug.Log("Hit " + enemy.name);
+                 Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+            }
+        }
+    }
+
+    private void RangedAttack()
+    {
+        //animator.SetTrigger("RangedAttack");
+        Debug.Log("Fired a projectile.");
+        // Implement projectile logic here
+        // Deal 'weaponDamage' to enemy
+    }
+
+    private void SecondaryLMAttack()
+    {
+        //animator.SetTrigger("SecondaryLMAttack");
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.5f);
+        foreach (Collider enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                // Apply damage to enemies within range
+                Debug.Log("Hit " + enemy.name);
+                 Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+            }
+        }
+    }
+
+    private void SecondaryHMAttack()
+    {
+        //animator.SetTrigger("SecondaryHMAttack");
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 3.0f);
+        foreach (Collider enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                // Apply damage to enemies within range
+                Debug.Log("Hit " + enemy.name);
+                 Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+            }
+        }
+    }
+
+    private void SecondaryRangedAttack()
+    {
+        //animator.SetTrigger("SecondaryRangedAttack");
+        Debug.Log("Fired a special projectile.");
+        // Implement special projectile logic here
+        // Deal 'secondaryDamage' to enemy
+    }
+
+    IEnumerator AttackCooldown()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+    IEnumerator SecondaryCooldown()
+    {
+        canSecondaryAttack = false;
+        yield return new WaitForSeconds(secondaryCooldown);
+        canSecondaryAttack = true;
     }
 }
