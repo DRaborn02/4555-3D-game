@@ -1118,8 +1118,8 @@ GameObject:
   - component: {fileID: 398122143}
   - component: {fileID: 398122142}
   m_Layer: 0
-  m_Name: Capsule
-  m_TagString: Untagged
+  m_Name: NPC
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3498,6 +3498,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1510396481359092016, guid: 5dfb680211937a049892dd56de567657, type: 3}
       propertyPath: m_Name
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1510396481359092016, guid: 5dfb680211937a049892dd56de567657, type: 3}
+      propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 1987072294160212832, guid: 5dfb680211937a049892dd56de567657, type: 3}
