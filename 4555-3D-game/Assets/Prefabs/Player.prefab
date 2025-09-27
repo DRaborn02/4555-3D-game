@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 3069596806241812566}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,6 +295,12 @@ MonoBehaviour:
   moveSpeed: 5
   rotationSpeed: 10
   interactRange: 2
+  jumpHeight: 5
+  jumpCooldown: 1
+  dashSpeed: 5
+  dashDuration: 0.1
+  dashCooldown: 2
+  npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   item: {fileID: 0}
 --- !u!114 &3069596806241812566
 MonoBehaviour:
