@@ -51,6 +51,6 @@ public class PlayerHealth : MonoBehaviour
             heartImages[i].enabled = (i < currentHalfHearts);
         }
 
-        Debug.Log($"Current health = {currentHalfHearts}/{maxHalfHearts}");
+        Debug.Log($"Current health = {currentHalfHearts-1}/{maxHalfHearts-1}");
     }
 }
