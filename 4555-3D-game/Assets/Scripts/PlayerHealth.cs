@@ -1,56 +1,52 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int maxHalfHearts = 6; // 6 = 3 full hearts
-    [SerializeField] private int currentHalfHearts;
-    [SerializeField] private PlayerController playerController; // drag in the PlayerController
-
-
-    private Image[] heartImages;
+    private int maxQuarterHearts;
+    private int currentQuarterHearts;
+    private PlayerUIManager uiManager;
+    private PlayerInput input;
 
     void Awake()
     {
-        currentHalfHearts = maxHalfHearts;
+        uiManager = PlayerUIManager.Instance;
+        input = GetComponent<PlayerInput>();
     }
 
-    public void BindUI(Image[] hearts)
+    public void TakeDamage(int quarterHearts)
     {
-        heartImages = hearts;
-        currentHalfHearts = maxHalfHearts;
-        RefreshHearts();
+        currentQuarterHearts = Mathf.Max(currentQuarterHearts - quarterHearts, 0);
+        uiManager.UpdateHealthUI(this, input.playerIndex);
+        // print("Player " + input.playerIndex + " took damage, current health: " + currentQuarterHearts);
     }
 
-    public void TakeDamage(int halfHearts)
+    public void Heal(int quarterHearts)
     {
-        currentHalfHearts = Mathf.Max(currentHalfHearts - halfHearts, 0);
-        RefreshHearts();
-
-        // If at or below 1 half-heart, disable player control
-        if (currentHalfHearts <= 1 && playerController != null)
-        {
-            playerController.enabled = false;
-            Debug.Log("Player is knocked out!");
-        }
+        currentQuarterHearts = Mathf.Min(currentQuarterHearts + quarterHearts, maxQuarterHearts);
+        uiManager.UpdateHealthUI(this, input.playerIndex);
     }
 
-    public void Heal(int halfHearts)
+    public int getMaxHealth()
     {
-        currentHalfHearts = Mathf.Min(currentHalfHearts + halfHearts, maxHalfHearts);
-        RefreshHearts();
+        return maxQuarterHearts;
     }
 
-    private void RefreshHearts()
+    public int getCurrentHealth()
     {
-        if (heartImages == null) return;
-
-        // Disable from the back (Heart5 → Heart0)
-        for (int i = 0; i < heartImages.Length; i++)
-        {
-            heartImages[i].enabled = (i < currentHalfHearts);
-        }
-
-        Debug.Log($"Current health = {currentHalfHearts-1}/{maxHalfHearts-1}");
+        return currentQuarterHearts;
     }
+
+    public void setMaxHealth(int quarterHearts)
+    {
+        maxQuarterHearts = quarterHearts;
+        currentQuarterHearts = maxQuarterHearts;
+    }
+
+    public void setPlayerUIModule(PlayerUIManager uiManager, int playerIndex)
+    {
+        
+    }
+
 }

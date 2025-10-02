@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     public Animator animator;
 
+    [Header("Movement Settings")]
     [SerializeField] float moveSpeed = 5.0f;
     [SerializeField] float rotationSpeed = 10.0f;
     [SerializeField] private float interactRange = 2f;
@@ -17,7 +18,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashSpeed = 10.0f;
     [SerializeField] float dashDuration = 0.2f;
     [SerializeField] float dashCooldown = 2.0f;
-    [SerializeField] private Color npcHighlightColor = Color.white; 
+    [Space]
+
+    [Header("NPC Settings")]
+    [SerializeField] private Color npcHighlightColor = Color.white;
+    [Space]
+
+    [Header("Health Settings")]
+    [SerializeField] private int maxQuarterHearts = 12; // 12 = 3 full hearts
 
     private Collider[] results = new Collider[5]; // buffer for overlap checks
 
@@ -53,6 +61,7 @@ public class PlayerController : MonoBehaviour
     {
         var input = GetComponent<PlayerInput>();
         var health = GetComponent<PlayerHealth>();
+        health.setMaxHealth(maxQuarterHearts);
         PlayerUIManager.Instance.AssignUI(inventory, health, input.playerIndex);
     }
 
@@ -132,7 +141,7 @@ public class PlayerController : MonoBehaviour
             attackCooldown = weapon.cooldown;
             secondaryWeaponDamage = weapon.secondaryDamage;
             secondaryCooldown = weapon.secondaryCooldown;
-            heldItemPrefab = weapon.heldPrefab;
+            heldItemPrefab = weapon.prefab;
         }
         else
         {

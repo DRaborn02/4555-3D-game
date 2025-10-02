@@ -20,11 +20,12 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         slots = new Item[defaultSlotCount];
+        handTransform = transform.Find("Hand"); // Default to a child named "Hand"
     }
 
     public void BindUI(GameObject uiRoot)
     {
-        Transform slotsParent = uiRoot.transform.Find("InventorySlots");
+        Transform slotsParent = uiRoot.transform.Find("MainPanel").Find("InventoryPanel");
 
         // Make sure we only pull the direct child slot images (Slot0, Slot1, Slot2)
         slotImages = new Image[defaultSlotCount];
@@ -33,7 +34,7 @@ public class Inventory : MonoBehaviour
             slotImages[i] = slotsParent.Find("Slot" + i).GetComponent<Image>();
         }
 
-        equipmentImage = uiRoot.transform.Find("EquipmentSlot").Find("Slot0").GetComponent<Image>();
+        equipmentImage = uiRoot.transform.Find("MainPanel").Find("EquipmentPanel").Find("Slot0").GetComponent<Image>();
 
         RefreshUI();
     }
@@ -63,6 +64,7 @@ public class Inventory : MonoBehaviour
                 slots[i] = item;
                 Debug.Log("Picked up " + item.itemName);
                 RefreshUI();
+                equipItem();
                 return true;
             }
         }
@@ -71,6 +73,7 @@ public class Inventory : MonoBehaviour
         DropItem(slots[currentIndex]);
         slots[currentIndex] = item;
         RefreshUI();
+        equipItem();
         return true;
     }
 
@@ -78,11 +81,11 @@ public class Inventory : MonoBehaviour
     {
         if (item == null) return;
 
-        if (item.pickupPrefab != null)
+        if (item.prefab != null)
         {
             // Spawn the pickup at player's feet
             Vector3 dropPosition = transform.position + transform.forward;
-            Instantiate(item.pickupPrefab, dropPosition, Quaternion.identity);
+            Instantiate(item.prefab, dropPosition, Quaternion.identity);
         }
 
         Debug.Log("Dropped " + item.itemName);
@@ -134,6 +137,7 @@ public class Inventory : MonoBehaviour
         Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
         if (slots[currentIndex] != null)
         {
+            print("We have an item in the current slot, equipping it");
             equipItem();
         }
     }
@@ -157,6 +161,7 @@ public class Inventory : MonoBehaviour
         Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
         if (slots[currentIndex] != null)
         {
+            print("We have an item in the current slot, equipping it");
             equipItem();
         }
     }
@@ -186,6 +191,7 @@ public class Inventory : MonoBehaviour
         GameObject instance = null;
         if (item.heldPrefab != null && handTransform != null)
         {
+            print("We got an item prefab and a hand transform");
             instance = Instantiate(item.heldPrefab, handTransform);
 
             instance.transform.SetParent(handTransform);
