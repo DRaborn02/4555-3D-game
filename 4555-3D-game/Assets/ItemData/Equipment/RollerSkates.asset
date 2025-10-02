@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: Roller Skates
   icon: {fileID: 21300000, guid: 1ad22effa48b0404199d03f4bd056f84, type: 3}
   prefab: {fileID: 7001024421440241610, guid: 866f43ba330d6d541910921bf898d592, type: 3}
+  heldPrefab: {fileID: 3229410362765279597, guid: e09f0b1d7e27f6a4db29888c495337cd, type: 3}
   defense: 3
