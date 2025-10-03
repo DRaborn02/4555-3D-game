@@ -273,7 +273,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyboardMouse",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -284,7 +284,7 @@
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Controller",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -295,7 +295,7 @@
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyboardMouse",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -306,7 +306,7 @@
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Controller",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
