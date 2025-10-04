@@ -335,7 +335,7 @@ MonoBehaviour:
   dashDuration: 0.1
   dashCooldown: 2
   npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
-  maxQuarterHearts: 20
+  maxQuarterHearts: 12
   item: {fileID: 0}
 --- !u!114 &3069596806241812566
 MonoBehaviour:

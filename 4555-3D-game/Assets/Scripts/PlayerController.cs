@@ -65,6 +65,8 @@ public class PlayerController : MonoBehaviour
         PlayerUIManager.Instance.AssignUI(inventory, health, input.playerIndex);
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.RegisterPlayer(transform);
+        if (CameraObstruction.Instance != null)
+            CameraObstruction.Instance.RegisterPlayer(transform);
     }
 
     void OnDestroy()
