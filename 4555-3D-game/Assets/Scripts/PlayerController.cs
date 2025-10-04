@@ -63,6 +63,17 @@ public class PlayerController : MonoBehaviour
         var health = GetComponent<PlayerHealth>();
         health.setMaxHealth(maxQuarterHearts);
         PlayerUIManager.Instance.AssignUI(inventory, health, input.playerIndex);
+        if (CameraFollow.Instance != null)
+            CameraFollow.Instance.RegisterPlayer(transform);
+        if (CameraObstruction.Instance != null)
+            CameraObstruction.Instance.RegisterPlayer(transform);
+    }
+
+    void OnDestroy()
+    {
+        // Clean up if player leaves
+        if (CameraFollow.Instance != null)
+            CameraFollow.Instance.UnregisterPlayer(transform);
     }
 
     public void OnMove()
