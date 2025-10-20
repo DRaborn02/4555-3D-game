@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         slots = new Item[defaultSlotCount];
-        handTransform = transform.Find("Hand"); // Default to a child named "Hand"
+        //handTransform = transform.Find("Hand"); // Default to a child named "Hand"
     }
 
     public void BindUI(GameObject uiRoot)

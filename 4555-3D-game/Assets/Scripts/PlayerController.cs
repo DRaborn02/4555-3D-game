@@ -51,6 +51,8 @@ public class PlayerController : MonoBehaviour
     private float secondaryWeaponDamage;
     private float secondaryCooldown;
     private bool canSecondaryAttack = true;
+    
+    private bool isGrounded = true;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -86,6 +88,8 @@ public class PlayerController : MonoBehaviour
     {
         var playerInput = GetComponent<PlayerInput>();
         jumpInput = playerInput.actions["Jump"].ReadValue<float>();
+        isGrounded = false;
+        animator.SetBool("Jumping", true);
     }
 
     public void OnDash()
@@ -97,6 +101,12 @@ public class PlayerController : MonoBehaviour
         {
             dashRequested = true;
         }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        isGrounded = true;
+        animator.SetBool("Jumping", false);
     }
 
     void OnInteract()
@@ -169,6 +179,7 @@ public class PlayerController : MonoBehaviour
     {
         var playerInput = GetComponent<PlayerInput>();
         attackInput = playerInput.actions["Attack"].ReadValue<float>();
+        animator.SetTrigger("Attack");
         //Debug.Log("Attack was pressed");
     }
 
@@ -186,6 +197,16 @@ public class PlayerController : MonoBehaviour
 
         // WASD always maps directly to world axes (XZ plane)
         Vector3 move = new Vector3(-moveInput.x, 0, -moveInput.y);
+
+        // Animations
+        if (move == Vector3.zero)
+        {
+            animator.SetBool("Moving", false);
+        }
+        else
+        {
+            animator.SetBool("Moving", true);
+        }
 
         if (move.sqrMagnitude > 0.01f)
         {
