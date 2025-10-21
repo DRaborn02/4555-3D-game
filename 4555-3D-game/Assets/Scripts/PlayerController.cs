@@ -123,7 +123,6 @@ public class PlayerController : MonoBehaviour
 
     void OnInteract()
     {
-
         Collider[] hits = Physics.OverlapSphere(transform.position, interactRange);
         foreach (var hit in hits)
         {
@@ -131,7 +130,6 @@ public class PlayerController : MonoBehaviour
 
             if (hit.CompareTag("NPC")) 
             {
-
                 Renderer rend = hit.GetComponent<Renderer>();
                 if (rend != null)
                 {
@@ -139,7 +137,6 @@ public class PlayerController : MonoBehaviour
                 }
                 return;
             }
-
             
             Pickup pickup = hit.GetComponent<Pickup>();
             if (pickup != null)
