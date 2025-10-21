@@ -2,6 +2,8 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+
+4555-3D-game/Assets/Scenes/SampleScene.unity
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
