@@ -11,4 +11,6 @@ public class Weapon : Item
     public float swingSpeed;
     public float cooldown;
     public float secondaryCooldown;    
+    public float projectileSpeed;
+    public GameObject projectilePrefab;
 }

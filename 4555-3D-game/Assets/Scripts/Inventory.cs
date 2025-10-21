@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         slots = new Item[defaultSlotCount];
-        handTransform = transform.Find("Hand"); // Default to a child named "Hand"
+        //handTransform = transform.Find("Hand"); // Default to a child named "Hand"
     }
 
     public void BindUI(GameObject uiRoot)
@@ -51,7 +51,7 @@ public class Inventory : MonoBehaviour
             }
 
             equipmentSlot = item;
-            Debug.Log("Equipped " + item.itemName);
+            //Debug.Log("Equipped " + item.itemName);
             RefreshUI();
             return true;
         }
@@ -62,7 +62,7 @@ public class Inventory : MonoBehaviour
             if (slots[i] == null)
             {
                 slots[i] = item;
-                Debug.Log("Picked up " + item.itemName);
+                //Debug.Log("Picked up " + item.itemName);
                 RefreshUI();
                 equipItem();
                 return true;
@@ -88,7 +88,7 @@ public class Inventory : MonoBehaviour
             Instantiate(item.prefab, dropPosition, Quaternion.identity);
         }
 
-        Debug.Log("Dropped " + item.itemName);
+        //Debug.Log("Dropped " + item.itemName);
     }
 
     private void RefreshUI()
@@ -122,7 +122,7 @@ public class Inventory : MonoBehaviour
     {
         if (IsInventoryEmpty())
         {
-            Debug.Log("Inventory is empty.");
+            //Debug.Log("Inventory is empty.");
             return;
         }
 
@@ -134,10 +134,10 @@ public class Inventory : MonoBehaviour
         while (slots[currentIndex] == null && currentIndex != startIndex);
 
         RefreshUI();
-        Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+        //Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
         if (slots[currentIndex] != null)
         {
-            print("We have an item in the current slot, equipping it");
+            //print("We have an item in the current slot, equipping it");
             equipItem();
         }
     }
@@ -146,7 +146,7 @@ public class Inventory : MonoBehaviour
     {
         if (IsInventoryEmpty())
         {
-            Debug.Log("Inventory is empty.");
+            //Debug.Log("Inventory is empty.");
             return;
         }
 
@@ -158,10 +158,10 @@ public class Inventory : MonoBehaviour
         while (slots[currentIndex] == null && currentIndex != startIndex);
 
         RefreshUI();
-        Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+        //Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
         if (slots[currentIndex] != null)
         {
-            print("We have an item in the current slot, equipping it");
+            //print("We have an item in the current slot, equipping it");
             equipItem();
         }
     }
@@ -185,13 +185,13 @@ public class Inventory : MonoBehaviour
         }
         
         Item item = GetCurrentItem();
-        Debug.Log("Equipped item: " + item.itemName);
+        //Debug.Log("Equipped item: " + item.itemName);
 
         // Instantiate held prefab (if any) under the hand transform
         GameObject instance = null;
         if (item.heldPrefab != null && handTransform != null)
         {
-            print("We got an item prefab and a hand transform");
+            //print("We got an item prefab and a hand transform");
             instance = Instantiate(item.heldPrefab, handTransform);
 
             instance.transform.SetParent(handTransform);

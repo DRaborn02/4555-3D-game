@@ -29,6 +29,13 @@ public class PlayerController : MonoBehaviour
 
     private Collider[] results = new Collider[5]; // buffer for overlap checks
 
+    [Header("Combat Settings")]
+    [SerializeField] private GameObject hurtBoxPrefab; // assign in Inspector
+    [SerializeField] private Transform attackSpawnPoint; // e.g. in front of player
+
+    [SerializeField] private float meleeRange = 1.5f;
+    [SerializeField] private float hurtBoxLifetime = 0.2f;
+
     private Vector2 moveInput;
     private Rigidbody rb;
     private Inventory inventory;
@@ -44,17 +51,24 @@ public class PlayerController : MonoBehaviour
     private bool isDashing = false;
     private float attackInput;
     private float weaponDamage;
+    private float projectileSpeed;
     private float attackCooldown;
     private bool canAttack = true;
+    private GameObject projectilePrefab;
 
     private float secondaryAttackInput;
     private float secondaryWeaponDamage;
     private float secondaryCooldown;
     private bool canSecondaryAttack = true;
+    
+    
+    private int upperBodyLayer;
+    private bool isGrounded = true;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         inventory = GetComponent<Inventory>();
+        upperBodyLayer = animator.GetLayerIndex("Upper Body");
     }
 
     void Start()
@@ -86,6 +100,8 @@ public class PlayerController : MonoBehaviour
     {
         var playerInput = GetComponent<PlayerInput>();
         jumpInput = playerInput.actions["Jump"].ReadValue<float>();
+        isGrounded = false;
+        animator.SetBool("Jumping", true);
     }
 
     public void OnDash()
@@ -97,6 +113,12 @@ public class PlayerController : MonoBehaviour
         {
             dashRequested = true;
         }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        isGrounded = true;
+        animator.SetBool("Jumping", false);
     }
 
     void OnInteract()
@@ -140,16 +162,24 @@ public class PlayerController : MonoBehaviour
         item = newItem; 
         currentlyEquippedObject = instance;
 
-        Debug.Log("Equipped item: " + (currentlyEquippedItem != null ? currentlyEquippedItem.itemName : "none"));
+        //Debug.Log("Equipped item: " + (currentlyEquippedItem != null ? currentlyEquippedItem.itemName : "none"));
 
         if (currentlyEquippedItem is Weapon weapon)
         {
-            Debug.Log("Equipped weapon: " + weapon.itemName);
+            //Debug.Log("Equipped weapon: " + weapon.itemName);
             weaponDamage = weapon.damage;
             attackCooldown = weapon.cooldown;
             secondaryWeaponDamage = weapon.secondaryDamage;
             secondaryCooldown = weapon.secondaryCooldown;
             heldItemPrefab = weapon.prefab;
+
+            if (weapon.type == Weapon.WeaponType.Ranged)
+            {
+                projectileSpeed = weapon.projectileSpeed;
+                projectilePrefab = weapon.projectilePrefab;
+            }
+
+            
         }
         else
         {
@@ -165,7 +195,9 @@ public class PlayerController : MonoBehaviour
     public void OnAttack()
     {
         var playerInput = GetComponent<PlayerInput>();
-        attackInput = playerInput.actions["Attack"].ReadValue<float>();
+        attackInput = 1;
+        //print("test this out:");
+        //print(playerInput.actions["Attack"].ReadValue<float>());
         //Debug.Log("Attack was pressed");
     }
 
@@ -183,6 +215,16 @@ public class PlayerController : MonoBehaviour
 
         // WASD always maps directly to world axes (XZ plane)
         Vector3 move = new Vector3(-moveInput.x, 0, -moveInput.y);
+
+        // Animations
+        if (move == Vector3.zero)
+        {
+            animator.SetBool("Moving", false);
+        }
+        else
+        {
+            animator.SetBool("Moving", true);
+        }
 
         if (move.sqrMagnitude > 0.01f)
         {
@@ -222,33 +264,29 @@ public class PlayerController : MonoBehaviour
         {
             if (currentlyEquippedItem is Weapon weapon && canAttack)
             {
-                Debug.Log("Attacking with " + weapon.itemName + " of type " + weapon.type);
+                //Debug.Log("Attacking with " + weapon.itemName + " of type " + weapon.type);
 
                 // Implement attack logic based on weapon type
                 if (weapon.type == Weapon.WeaponType.LightMelee)
                 {
                     // Light melee attack logic
-                    Debug.Log("Performing light melee attack.");
+                    //Debug.Log("Performing light melee attack.");
                     LightMeleeAttack();
                 }
                 else if (weapon.type == Weapon.WeaponType.HeavyMelee)
                 {
                     // Heavy melee attack logic
-                    Debug.Log("Performing heavy melee attack.");
+                    //Debug.Log("Performing heavy melee attack.");
                     HeavyMeleeAttack();
                 }
                 else if (weapon.type == Weapon.WeaponType.Ranged)
                 {
                     // Ranged attack logic
-                    Debug.Log("Performing ranged attack.");
+                    //Debug.Log("Performing ranged attack.");
                     RangedAttack();
                 }
                 attackInput = 0; // Reset attack input after processing
                 StartCoroutine(AttackCooldown());
-            }
-            else
-            {
-                canAttack = false;
             }
         }
 
@@ -256,25 +294,25 @@ public class PlayerController : MonoBehaviour
         {
             if (currentlyEquippedItem is Weapon weapon && canSecondaryAttack)
             {
-                Debug.Log("Performing secondary attack with " + weapon.itemName);
+                //Debug.Log("Performing secondary attack with " + weapon.itemName);
 
                 // Implement secondary attack logic based on weapon type
                 if (weapon.type == Weapon.WeaponType.LightMelee)
                 {
                     // Light melee secondary attack logic
-                    Debug.Log("Performing light melee secondary attack.");
+                    //Debug.Log("Performing light melee secondary attack.");
                     SecondaryLMAttack();
                 }
                 else if (weapon.type == Weapon.WeaponType.HeavyMelee)
                 {
                     // Heavy melee secondary attack logic
-                    Debug.Log("Performing heavy melee secondary attack.");
+                    //Debug.Log("Performing heavy melee secondary attack.");
                     SecondaryHMAttack();
                 }
                 else if (weapon.type == Weapon.WeaponType.Ranged)
                 {
                     // Ranged secondary attack logic
-                    Debug.Log("Performing ranged secondary attack.");
+                    //Debug.Log("Performing ranged secondary attack.");
                     SecondaryRangedAttack();
                 }
                 secondaryAttackInput = 0; // Reset secondary attack input after processing
@@ -331,29 +369,33 @@ public class PlayerController : MonoBehaviour
     private void LightMeleeAttack()
     {
         //animator.SetTrigger("LightMeleeAttack");
-        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.0f);
-        foreach (Collider enemy in hitEnemies)
-        {
-            if (enemy.CompareTag("Enemy"))
-            {
-                // Apply damage to enemies within range
-                Debug.Log("Hit " + enemy.name);
-                Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
-            }
-        }
+        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
+        animator.SetTrigger("Attack");
+        //Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.0f);
+
+        //print("Spawning hurtbox");
+
+        GameObject hurtboxObj = Instantiate(hurtBoxPrefab, attackSpawnPoint.position, attackSpawnPoint.rotation);
+        HurtBox hurtbox = hurtboxObj.GetComponent<HurtBox>();
+        hurtbox.owner = gameObject;
+        hurtbox.damage = weaponDamage;
+        hurtbox.lifetime = hurtBoxLifetime;
     }
 
     private void HeavyMeleeAttack()
     {
-       //animator.SetTrigger("HeavyMeleeAttack");
+        //print("Heavy Melee Attack Executed");
+        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
+        animator.SetTrigger("Attack");
+        //animator.SetTrigger("HeavyMeleeAttack");
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.5f);
         foreach (Collider enemy in hitEnemies)
         {
             if (enemy.CompareTag("Enemy"))
             {
                 // Apply damage to enemies within range
-                Debug.Log("Hit " + enemy.name);
-                 Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+                //Debug.Log("Hit " + enemy.name);
+                 //Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
             }
         }
     }
@@ -361,9 +403,21 @@ public class PlayerController : MonoBehaviour
     private void RangedAttack()
     {
         //animator.SetTrigger("RangedAttack");
-        Debug.Log("Fired a projectile.");
+        //Debug.Log("Fired a projectile.");
         // Implement projectile logic here
         // Deal 'weaponDamage' to enemy
+        GameObject proj = Instantiate(projectilePrefab, attackSpawnPoint.position, attackSpawnPoint.rotation);
+        var hb = proj.GetComponent<HurtBox>();
+        hb.isProjectile = true;
+        hb.direction = attackSpawnPoint.forward;
+        hb.damage = weaponDamage;
+        hb.speed = 15f;
+        hb.lifetime = 3f;
+        hb.rb = proj.GetComponent<Rigidbody>();
+
+        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
+        animator.SetTrigger("RangedAttack");
+
     }
 
     private void SecondaryLMAttack()
@@ -375,8 +429,8 @@ public class PlayerController : MonoBehaviour
             if (enemy.CompareTag("Enemy"))
             {
                 // Apply damage to enemies within range
-                Debug.Log("Hit " + enemy.name);
-                 Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+                //Debug.Log("Hit " + enemy.name);
+                 //Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
             }
         }
     }
@@ -390,8 +444,8 @@ public class PlayerController : MonoBehaviour
             if (enemy.CompareTag("Enemy"))
             {
                 // Apply damage to enemies within range
-                Debug.Log("Hit " + enemy.name);
-                 Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
+                //Debug.Log("Hit " + enemy.name);
+                 //Debug.Log("Dealt " + weaponDamage + " damage to " + enemy.name);
             }
         }
     }
@@ -399,7 +453,7 @@ public class PlayerController : MonoBehaviour
     private void SecondaryRangedAttack()
     {
         //animator.SetTrigger("SecondaryRangedAttack");
-        Debug.Log("Fired a special projectile.");
+        //Debug.Log("Fired a special projectile.");
         // Implement special projectile logic here
         // Deal 'secondaryDamage' to enemy
     }
@@ -416,4 +470,40 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(secondaryCooldown);
         canSecondaryAttack = true;
     }
+
+    IEnumerator PulseLayerWeight(int layerIndex, float peakWeight, float totalDuration, float fadeFraction = 0.25f)
+    {
+        // fadeFraction = fraction of time spent fading in/out (e.g., 0.25 = 25% fade-in, 50% hold, 25% fade-out)
+        float fadeDuration = totalDuration * fadeFraction;
+        float holdDuration = totalDuration - (fadeDuration * 2f);
+        float time = 0f;
+
+        // --- Fade In ---
+        while (time < fadeDuration)
+        {
+            time += Time.deltaTime;
+            float t = time / fadeDuration;
+            animator.SetLayerWeight(layerIndex, Mathf.Lerp(0f, peakWeight, t));
+            yield return null;
+        }
+
+        animator.SetLayerWeight(layerIndex, peakWeight);
+
+        // --- Hold ---
+        yield return new WaitForSeconds(holdDuration);
+
+        // --- Fade Out ---
+        time = 0f;
+        while (time < fadeDuration)
+        {
+            time += Time.deltaTime;
+            float t = time / fadeDuration;
+            animator.SetLayerWeight(layerIndex, Mathf.Lerp(peakWeight, 0f, t));
+            yield return null;
+        }
+
+        animator.SetLayerWeight(layerIndex, 0f);
+    }
+
+
 }

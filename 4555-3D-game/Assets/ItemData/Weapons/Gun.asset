@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c5000b3afe1114cb104c81cfd65cfb, type: 3}
   m_Name: Gun
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
-  pickupPrefab: {fileID: 0}
+  itemName: Gun
+  icon: {fileID: 21300000, guid: a872f21481bc2c94081cf17b3b113adc, type: 3}
+  prefab: {fileID: 6225125735990664276, guid: b1d609d236bcd2244828443261edb3b0, type: 3}
+  heldPrefab: {fileID: 828588549114097526, guid: 54d849a55c1ba0d4f8606eed1f9c57ae, type: 3}
   type: 2
-  damage: 0
+  damage: 4
   secondaryDamage: 0
   swingSpeed: 0
-  cooldown: 0
-  secondaryCooldown: 0
-  heldPrefab: {fileID: 0}
+  cooldown: 0.5
+  secondaryCooldown: 8
+  projectileSpeed: 4
+  projectilePrefab: {fileID: 9035958555467244163, guid: ccd2b476e55bee04a8a0b838ffbba5a3, type: 3}
