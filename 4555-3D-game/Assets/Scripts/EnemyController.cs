@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -83,10 +83,14 @@ public class EnemyController : MonoBehaviour
 
     void OnDisable()
     {
-        // Stop per-instance coroutines and clear state so returning to pool is safe
         StopAllCoroutines();
-        if (navAgent != null) navAgent.ResetPath();
+
+        if (navAgent != null && navAgent.enabled && navAgent.isOnNavMesh)
+        {
+            navAgent.ResetPath();
+        }
     }
+
     private void Start()
     {
         // If an EnemyData ScriptableObject is assigned, apply its values
@@ -103,12 +107,6 @@ public class EnemyController : MonoBehaviour
             controller = enemyData.animatorController ?? controller;
         }
 
-        animator = GetComponent<Animator>();
-        animator.runtimeAnimatorController = controller;
-        if (controller != null && animator != null)
-        {
-            animator.runtimeAnimatorController = controller;
-        }
         navAgent = GetComponent<NavMeshAgent>();
 
         // Ensure NavMeshAgent is enabled and set to update position/rotation
@@ -128,32 +126,32 @@ public class EnemyController : MonoBehaviour
         if (currentState != State.WaitingForPlayer)
         {
             playerInSightRange = Physics.CheckSphere(transform.position, sightRange, playerLayer);
-            Debug.Log("Player in sight range: " + playerInSightRange);
+            //Debug.Log("Player in sight range: " + playerInSightRange);
             playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerLayer);
-            Debug.Log("Player in attack range: " + playerInAttackRange);
+            //Debug.Log("Player in attack range: " + playerInAttackRange);
 
             if (playerInSightRange && !playerInAttackRange)
             {
                 currentState = State.Chasing;
-                Debug.Log("Player in sight range but not attack range. Chasing.");
+                //Debug.Log("Player in sight range but not attack range. Chasing.");
                 ChasePlayer();
             }
             else if (playerInAttackRange && playerInSightRange)
             {
                 currentState = State.Attacking;
-                Debug.Log("Player in attack or sight range. Attacking.");
+                //Debug.Log("Player in attack or sight range. Attacking.");
                 AttackPlayer();
             }
             else if (!playerInSightRange && wasAttacked)
             {
                 currentState = State.Chasing;
-                Debug.Log("Enemy attacked. Chasing.");
+                //Debug.Log("Enemy attacked. Chasing.");
                 ChasePlayer();
             } 
             else if (!playerInAttackRange && !playerInSightRange)
             {
                 currentState = State.Patrolling;
-                Debug.Log("Player not in attack or sight range. Patrolling.");
+                //Debug.Log("Player not in attack or sight range. Patrolling.");
                 Patrolling();
             }
         }
@@ -178,7 +176,7 @@ public class EnemyController : MonoBehaviour
 
     private void Patrolling()
     {
-        Debug.Log("Patrolling starting.");
+        //Debug.Log("Patrolling starting.");
         if (!walkPointSet)
         {
             SearchWalkPoint();
@@ -188,10 +186,11 @@ public class EnemyController : MonoBehaviour
         {
             if (!navAgent.pathPending)
                 navAgent.SetDestination(walkPoint);
-                Debug.Log("Moving to walk point at " + walkPoint);
+                //Debug.Log("Moving to walk point at " + walkPoint);
         }
         // Ensure animator reflects patrolling state
         animator.SetBool("Walk", true);
+        animator.SetBool("Run", false);
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         if (distanceToWalkPoint.magnitude < 1f)
@@ -214,14 +213,15 @@ public class EnemyController : MonoBehaviour
     }
     private void ChasePlayer()
     {
-        Debug.Log("Chasing starting.");
-        animator.SetBool("Walk", true);
+        //Debug.Log("Chasing starting.");
+        animator.SetBool("Run", true);
+        animator.SetBool("Walk", false);
         if (navAgent != null && targetPlayer != null)
             navAgent.SetDestination(targetPlayer.position);
     }
     private void AttackPlayer()
     {
-        Debug.Log("Attacking starting.");
+        //Debug.Log("Attacking starting.");
         // Stop moving and face the player
         if (navAgent != null)
             navAgent.SetDestination(transform.position);
@@ -251,7 +251,7 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        Debug.Log("Enemy took damage: " + damage);
+        //Debug.Log("Enemy took damage: " + damage);
         enemyHealth -= damage;
         StartCoroutine(DamageCooldown());
 
@@ -265,7 +265,7 @@ public class EnemyController : MonoBehaviour
 
     private void DestroyEnemy()
     {
-        Debug.Log("Enemy destroyed.");
+        //Debug.Log("Enemy destroyed.");
         StartCoroutine(EnemyDeath());
     }
 
@@ -279,7 +279,7 @@ public class EnemyController : MonoBehaviour
             {
                 targetPlayer = playerObject.transform;
                 currentState = State.Patrolling;
-                Debug.Log("Player detected. Starting patrol.");
+                //Debug.Log("Player detected. Starting patrol.");
             }
 
             yield return new WaitForSeconds(1f);

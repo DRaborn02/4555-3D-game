@@ -20,6 +20,7 @@ MonoBehaviour:
   damage: 2
   secondaryDamage: 3
   swingSpeed: 2
-  cooldown: 0.8
+  cooldown: 1.25
   secondaryCooldown: 8
   projectileSpeed: 0
+  projectilePrefab: {fileID: 0}

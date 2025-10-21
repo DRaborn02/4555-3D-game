@@ -6,11 +6,12 @@ TagManager:
   tags:
   - Enemy
   - NPC
+  - Item
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Items
   - Water
   - UI
   - Obstructions
