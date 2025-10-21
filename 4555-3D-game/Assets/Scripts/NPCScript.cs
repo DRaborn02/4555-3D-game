@@ -39,7 +39,7 @@ public class NPC : MonoBehaviour
                     rend.material.color = triggeredColor;
             }
 
-            Debug.Log("NPC triggered by Player!");
+            //Debug.Log("NPC triggered by Player!");
         }
     }
 

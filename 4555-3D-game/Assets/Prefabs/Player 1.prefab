@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2462552112061120452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8851944162800810459}
+  - component: {fileID: 4921893290722320588}
+  - component: {fileID: 8985659567149158686}
+  m_Layer: 0
+  m_Name: attackSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8851944162800810459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2462552112061120452}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.015, z: 0.42}
+  m_LocalScale: {x: 1, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2344203860670622328}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &4921893290722320588
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2462552112061120452}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &8985659567149158686
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2462552112061120452}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7405907726030055255
 GameObject:
   m_ObjectHideFlags: 0
@@ -24,12 +86,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7405907726030055255}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.26, y: -1.26, z: 0}
+  m_LocalRotation: {x: -0.5016175, y: 0.74341625, z: -0.03930232, w: 0.44064438}
+  m_LocalPosition: {x: 0.02149929, y: -0.18216844, z: 0.057991203}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 737567381187428063}
+  m_Father: {fileID: 5091604224579858485}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8116887955583915299
 GameObject:
@@ -68,6 +130,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3775075440418722574}
+  - {fileID: 8851944162800810459}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7743956215399206823
@@ -181,6 +244,10 @@ MonoBehaviour:
   dashCooldown: 2
   npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   maxQuarterHearts: 12
+  hurtBoxPrefab: {fileID: 8836447578986973661, guid: 464f4b1d14e1f7e4db82192b2eb080b6, type: 3}
+  attackSpawnPoint: {fileID: 8851944162800810459}
+  meleeRange: 1.5
+  hurtBoxLifetime: 20
   item: {fileID: 0}
 --- !u!114 &3069596806241812566
 MonoBehaviour:
@@ -313,19 +380,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4167280743394806330, guid: 3ae03d5698cc11849805308c851eb88f, type: 3}
+    - targetCorrespondingSourceObject: {fileID: -774485609497688880, guid: 3ae03d5698cc11849805308c851eb88f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5608159220723663527}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ae03d5698cc11849805308c851eb88f, type: 3}
---- !u!4 &737567381187428063 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4167280743394806330, guid: 3ae03d5698cc11849805308c851eb88f, type: 3}
-  m_PrefabInstance: {fileID: 3740655526242481381}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3775075440418722574 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3ae03d5698cc11849805308c851eb88f, type: 3}
+  m_PrefabInstance: {fileID: 3740655526242481381}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5091604224579858485 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -774485609497688880, guid: 3ae03d5698cc11849805308c851eb88f, type: 3}
   m_PrefabInstance: {fileID: 3740655526242481381}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &7098781080593385844 stripped
