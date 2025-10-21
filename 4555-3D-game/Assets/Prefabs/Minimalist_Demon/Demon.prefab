@@ -1152,6 +1152,7 @@ GameObject:
   - component: {fileID: -5388739402276208089}
   - component: {fileID: 7096033500568886885}
   - component: {fileID: 6119893029831218359}
+  - component: {fileID: -6750574764542112747}
   m_Layer: 0
   m_Name: Demon
   m_TagString: Enemy
@@ -1243,6 +1244,31 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-6750574764542112747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094233446992353698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee095cad9f8ab84fba8cd208d25a36f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  navAgent: {fileID: 6119893029831218359}
+  controller: {fileID: 9100000, guid: 9ba07d1560dc74d4cb9a6b19e4a020ae, type: 2}
+  animator: {fileID: 0}
+  targetPlayer: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 34
+  playerHealth: {fileID: 0}
+  rotationSpeed: 5
+  enemyData: {fileID: 0}
 --- !u!1 &8206800945086871755
 GameObject:
   m_ObjectHideFlags: 0
