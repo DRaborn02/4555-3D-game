@@ -15,8 +15,8 @@ MonoBehaviour:
   health: 10
   attackCooldown: 1.5
   damageCooldown: 1
-  attackRange: 1.5
-  sightRange: 8
+  attackRange: 2
+  sightRange: 10
   patrolRange: 10
   navSpeed: 3.5
   rotationSpeed: 5

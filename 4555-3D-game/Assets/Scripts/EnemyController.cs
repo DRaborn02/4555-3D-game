@@ -10,7 +10,6 @@ public class EnemyController : MonoBehaviour
     public RuntimeAnimatorController controller; // assign in inspector or load at runtime
     public Animator animator;
     public Transform targetPlayer;
-    public LayerMask groundLayer, playerLayer;
     public PlayerHealth playerHealth;
 
     private Vector3 walkPoint;
@@ -22,7 +21,7 @@ public class EnemyController : MonoBehaviour
     
     private float attackRange = 1.5f;
     private float sightRange = 3f;
-    private bool playerInSightRange, playerInAttackRange;
+    private bool playerInSightRange = false, playerInAttackRange = false;
     
     private float enemyHealth = 10f;
     private float attackCooldown = 1.5f;
@@ -124,11 +123,11 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         if (currentState != State.WaitingForPlayer)
-        {
-            playerInSightRange = Physics.CheckSphere(transform.position, sightRange, playerLayer);
-            //Debug.Log("Player in sight range: " + playerInSightRange);
-            playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerLayer);
-            //Debug.Log("Player in attack range: " + playerInAttackRange);
+        {           
+            playerInSightRange = false; playerInSightRange = false;
+            //print("Distance between player and enemy: " + Vector3.Distance(transform.position, targetPlayer.position));
+            if (Vector3.Distance(transform.position, targetPlayer.position) < sightRange) { playerInSightRange = true; }
+            if (Vector3.Distance(transform.position, targetPlayer.position) < attackRange) { playerInAttackRange = true; }
 
             if (playerInSightRange && !playerInAttackRange)
             {
@@ -147,7 +146,7 @@ public class EnemyController : MonoBehaviour
                 currentState = State.Chasing;
                 //Debug.Log("Enemy attacked. Chasing.");
                 ChasePlayer();
-            } 
+            }
             else if (!playerInAttackRange && !playerInSightRange)
             {
                 currentState = State.Patrolling;
@@ -191,6 +190,7 @@ public class EnemyController : MonoBehaviour
         // Ensure animator reflects patrolling state
         animator.SetBool("Walk", true);
         animator.SetBool("Run", false);
+        animator.SetBool("Attack", false);
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         if (distanceToWalkPoint.magnitude < 1f)
@@ -214,8 +214,9 @@ public class EnemyController : MonoBehaviour
     private void ChasePlayer()
     {
         //Debug.Log("Chasing starting.");
-        animator.SetBool("Run", true);
         animator.SetBool("Walk", false);
+        animator.SetBool("Run", true);
+        animator.SetBool("Attack", false);
         if (navAgent != null && targetPlayer != null)
             navAgent.SetDestination(targetPlayer.position);
     }
@@ -242,7 +243,7 @@ public class EnemyController : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.forward, out hit, attackRange))
             {
-                playerHealth.TakeDamage(1);
+                //playerHealth.TakeDamage(1);
             }
 
             StartCoroutine(AttackCooldown());
