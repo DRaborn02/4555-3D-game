@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: -5388739402276208089}
   - component: {fileID: 7096033500568886885}
   - component: {fileID: 6119893029831218359}
-  - component: {fileID: -6750574764542112747}
   - component: {fileID: 8505259699177614960}
+  - component: {fileID: 6329495683493275971}
   m_Layer: 0
-  m_Name: Demon
+  m_Name: Imp
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2334904962792123006}
   m_Father: {fileID: 0}
@@ -104,26 +104,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &-6750574764542112747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8094233446992353698}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ee095cad9f8ab84fba8cd208d25a36f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hurtbox: {fileID: 8167685811065887776}
-  navAgent: {fileID: 6119893029831218359}
-  controller: {fileID: 9100000, guid: 9ba07d1560dc74d4cb9a6b19e4a020ae, type: 2}
-  animator: {fileID: 0}
-  targetPlayer: {fileID: 0}
-  playerHealth: {fileID: 0}
-  rotationSpeed: 5
-  enemyData: {fileID: 11400000, guid: a77cf8ead0485024d80f62cc6b41aa43, type: 2}
 --- !u!114 &8505259699177614960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +116,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8ae439dfb47dd48bfd2aa0f2b44d72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 16
+  maxHealth: 8
+--- !u!114 &6329495683493275971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094233446992353698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f677741628a64b4bbbd1ffb13cedad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hurtbox: {fileID: 8167685811065887776}
+  flightHeight: 2.5
+  hoverRadius: 3
+  hoverSpeed: 2
+  moveSpeed: 4
+  rotationSpeed: 5
+  attackRange: 1.5
+  sightRange: 6
+  attackCooldown: 1.5
+  enemyHealth: 5
+  enemyData: {fileID: 11400000, guid: 53a239ec37d4ad24d8b0e9d2b8ad82e2, type: 2}
+  animator: {fileID: 8540816546584899588}
+  targetPlayer: {fileID: 0}
 --- !u!1 &8167685811065887776
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,8 +170,8 @@ Transform:
   m_GameObject: {fileID: 8167685811065887776}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.05, z: 0.837}
-  m_LocalScale: {x: 1, y: 2, z: 2}
+  m_LocalPosition: {x: 0, y: 1.05, z: 1.68}
+  m_LocalScale: {x: 1, y: 3, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2334904962792123006}
@@ -212,7 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d512da0a666a50545a2ef52c7b78c0fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageQuarterHearts: 2
+  damageQuarterHearts: 1
 --- !u!1001 &2877103948315495829
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -263,7 +268,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
       propertyPath: m_Name
-      value: Demon
+      value: Imp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1043830259349886573, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+      propertyPath: m_Name
+      value: Imp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3659736991398420435, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+      propertyPath: m_Name
+      value: Imp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -278,5 +291,10 @@ PrefabInstance:
 --- !u!4 &2334904962792123006 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+  m_PrefabInstance: {fileID: 2877103948315495829}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8540816546584899588 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
   m_PrefabInstance: {fileID: 2877103948315495829}
   m_PrefabAsset: {fileID: 0}

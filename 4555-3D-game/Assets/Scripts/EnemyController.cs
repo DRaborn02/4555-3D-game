@@ -129,11 +129,11 @@ public class EnemyController : MonoBehaviour
         if (currentState != State.WaitingForPlayer)
         {           
             playerInSightRange = false; playerInAttackRange = false;
-            print("Distance between player and enemy: " + Vector3.Distance(transform.position, targetPlayer.position));
+            //print("Distance between player and enemy: " + Vector3.Distance(transform.position, targetPlayer.position));
             if (Vector3.Distance(transform.position, targetPlayer.position) < sightRange) { playerInSightRange = true; }
             if (Vector3.Distance(transform.position, targetPlayer.position) < attackRange) { playerInAttackRange = true; }
-            print("is player in sight range?: " + playerInSightRange);
-            print("is player in attack range?: " + playerInAttackRange);
+            //print("is player in sight range?: " + playerInSightRange);
+            //print("is player in attack range?: " + playerInAttackRange);
 
             if (playerInSightRange && !playerInAttackRange)
             {
