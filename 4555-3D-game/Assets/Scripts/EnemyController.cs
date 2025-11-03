@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,11 +6,12 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] private GameObject hurtbox;
+
     public NavMeshAgent navAgent;
     public RuntimeAnimatorController controller; // assign in inspector or load at runtime
     public Animator animator;
     public Transform targetPlayer;
-    public LayerMask groundLayer, playerLayer;
     public PlayerHealth playerHealth;
 
     private Vector3 walkPoint;
@@ -22,7 +23,7 @@ public class EnemyController : MonoBehaviour
     
     private float attackRange = 1.5f;
     private float sightRange = 3f;
-    private bool playerInSightRange, playerInAttackRange;
+    private bool playerInSightRange = false, playerInAttackRange = false;
     
     private float enemyHealth = 10f;
     private float attackCooldown = 1.5f;
@@ -83,12 +84,18 @@ public class EnemyController : MonoBehaviour
 
     void OnDisable()
     {
-        // Stop per-instance coroutines and clear state so returning to pool is safe
         StopAllCoroutines();
-        if (navAgent != null) navAgent.ResetPath();
+
+        if (navAgent != null && navAgent.enabled && navAgent.isOnNavMesh)
+        {
+            navAgent.ResetPath();
+        }
     }
+
     private void Start()
     {
+        if (hurtbox != null)
+            hurtbox.SetActive(false);
         // If an EnemyData ScriptableObject is assigned, apply its values
         if (enemyData != null)
         {
@@ -103,12 +110,6 @@ public class EnemyController : MonoBehaviour
             controller = enemyData.animatorController ?? controller;
         }
 
-        animator = GetComponent<Animator>();
-        animator.runtimeAnimatorController = controller;
-        if (controller != null && animator != null)
-        {
-            animator.runtimeAnimatorController = controller;
-        }
         navAgent = GetComponent<NavMeshAgent>();
 
         // Ensure NavMeshAgent is enabled and set to update position/rotation
@@ -126,34 +127,36 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         if (currentState != State.WaitingForPlayer)
-        {
-            playerInSightRange = Physics.CheckSphere(transform.position, sightRange, playerLayer);
-            Debug.Log("Player in sight range: " + playerInSightRange);
-            playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerLayer);
-            Debug.Log("Player in attack range: " + playerInAttackRange);
+        {           
+            playerInSightRange = false; playerInAttackRange = false;
+            print("Distance between player and enemy: " + Vector3.Distance(transform.position, targetPlayer.position));
+            if (Vector3.Distance(transform.position, targetPlayer.position) < sightRange) { playerInSightRange = true; }
+            if (Vector3.Distance(transform.position, targetPlayer.position) < attackRange) { playerInAttackRange = true; }
+            print("is player in sight range?: " + playerInSightRange);
+            print("is player in attack range?: " + playerInAttackRange);
 
             if (playerInSightRange && !playerInAttackRange)
             {
                 currentState = State.Chasing;
-                Debug.Log("Player in sight range but not attack range. Chasing.");
+                //Debug.Log("Player in sight range but not attack range. Chasing.");
                 ChasePlayer();
             }
             else if (playerInAttackRange && playerInSightRange)
             {
                 currentState = State.Attacking;
-                Debug.Log("Player in attack or sight range. Attacking.");
+                //Debug.Log("Player in attack or sight range. Attacking.");
                 AttackPlayer();
             }
             else if (!playerInSightRange && wasAttacked)
             {
                 currentState = State.Chasing;
-                Debug.Log("Enemy attacked. Chasing.");
+                //Debug.Log("Enemy attacked. Chasing.");
                 ChasePlayer();
-            } 
+            }
             else if (!playerInAttackRange && !playerInSightRange)
             {
                 currentState = State.Patrolling;
-                Debug.Log("Player not in attack or sight range. Patrolling.");
+                //Debug.Log("Player not in attack or sight range. Patrolling.");
                 Patrolling();
             }
         }
@@ -178,7 +181,7 @@ public class EnemyController : MonoBehaviour
 
     private void Patrolling()
     {
-        Debug.Log("Patrolling starting.");
+        //Debug.Log("Patrolling starting.");
         if (!walkPointSet)
         {
             SearchWalkPoint();
@@ -188,10 +191,12 @@ public class EnemyController : MonoBehaviour
         {
             if (!navAgent.pathPending)
                 navAgent.SetDestination(walkPoint);
-                Debug.Log("Moving to walk point at " + walkPoint);
+                //Debug.Log("Moving to walk point at " + walkPoint);
         }
         // Ensure animator reflects patrolling state
         animator.SetBool("Walk", true);
+        animator.SetBool("Run", false);
+        animator.SetBool("Attack", false);
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         if (distanceToWalkPoint.magnitude < 1f)
@@ -214,14 +219,16 @@ public class EnemyController : MonoBehaviour
     }
     private void ChasePlayer()
     {
-        Debug.Log("Chasing starting.");
-        animator.SetBool("Walk", true);
+        //Debug.Log("Chasing starting.");
+        animator.SetBool("Walk", false);
+        animator.SetBool("Run", true);
+        animator.SetBool("Attack", false);
         if (navAgent != null && targetPlayer != null)
             navAgent.SetDestination(targetPlayer.position);
     }
     private void AttackPlayer()
     {
-        Debug.Log("Attacking starting.");
+        //Debug.Log("Attacking starting.");
         // Stop moving and face the player
         if (navAgent != null)
             navAgent.SetDestination(transform.position);
@@ -234,24 +241,23 @@ public class EnemyController : MonoBehaviour
             transform.LookAt(lookPos);
         }
 
+        if (!canAttack)
+        {
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", false);
+            animator.SetBool("Attack", false);
+        }
+
         if (!wasAttacked && canAttack)
         {
-            canAttack = false; // prevent immediate re-entry
-            animator.SetBool("Attack", true);
-
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit, attackRange))
-            {
-                playerHealth.TakeDamage(1);
-            }
-
-            StartCoroutine(AttackCooldown());
+            StartCoroutine(AttackSequence());
         }
+        
     }
 
     public void TakeDamage(float damage)
     {
-        Debug.Log("Enemy took damage: " + damage);
+        //Debug.Log("Enemy took damage: " + damage);
         enemyHealth -= damage;
         StartCoroutine(DamageCooldown());
 
@@ -265,9 +271,32 @@ public class EnemyController : MonoBehaviour
 
     private void DestroyEnemy()
     {
-        Debug.Log("Enemy destroyed.");
+        //Debug.Log("Enemy destroyed.");
         StartCoroutine(EnemyDeath());
     }
+
+    private IEnumerator AttackSequence()
+    {
+        canAttack = false; // lock out new attacks
+        animator.SetBool("Attack", true); // start attack animation
+
+        // Wait until the middle of the animation (the "hit" moment)
+        yield return new WaitForSeconds(0.4f); // e.g. 0.4f seconds
+
+        hurtbox.SetActive(true);
+
+        // Keep the hitbox active briefly for the swing duration
+        yield return new WaitForSeconds(0.2f); // e.g. 0.2f seconds
+        hurtbox.SetActive(false);
+
+        // Finish attack animation
+        animator.SetBool("Attack", false);
+
+        // Wait out the rest of the cooldown before next attack
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
 
     IEnumerator CheckForPlayer()
     {
@@ -279,7 +308,7 @@ public class EnemyController : MonoBehaviour
             {
                 targetPlayer = playerObject.transform;
                 currentState = State.Patrolling;
-                Debug.Log("Player detected. Starting patrol.");
+                //Debug.Log("Player detected. Starting patrol.");
             }
 
             yield return new WaitForSeconds(1f);
@@ -288,9 +317,13 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator AttackCooldown()
     {
+        
+        animator.SetBool("Attack", false);
         canAttack = false;
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
+        animator.SetBool("Attack", true);
+
     }
 
     IEnumerator DamageCooldown()
