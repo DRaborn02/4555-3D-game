@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   demonPrefab: {fileID: 8094233446992353698, guid: c814a1ff3b5a8c14686e8b7eee853b5e, type: 3}
-  impPrefab: {fileID: 8094233446992353698, guid: 408fef2935793224582326a2e21630fb, type: 3}
+  impPrefab: {fileID: 5251954996915672847, guid: 775ea814021d7274c9c84ed6149fb636, type: 3}
   spawnPoint: {fileID: 0}
   respawnDelay: 3
   autoRespawn: 1
