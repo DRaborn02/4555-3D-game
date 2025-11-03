@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1608827113798861588}
   - component: {fileID: 2223806095088338491}
-  - component: {fileID: 8093906097622388363}
   - component: {fileID: 7168416049330698634}
+  - component: {fileID: 8093906097622388363}
   m_Layer: 0
   m_Name: hurtBox
   m_TagString: Untagged
@@ -55,25 +55,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8093906097622388363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8836447578986973661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 774a7608efa5bcc4699812eab7cdeda5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
-  speed: 0
-  owner: {fileID: 0}
-  direction: {x: 0, y: 0, z: 0}
-  lifetime: 0.5
-  isProjectile: 0
-  rb: {fileID: 0}
 --- !u!54 &7168416049330698634
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -101,3 +82,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8093906097622388363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8836447578986973661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774a7608efa5bcc4699812eab7cdeda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  speed: 0
+  owner: {fileID: 0}
+  direction: {x: 0, y: 0, z: 0}
+  lifetime: 0.5
+  isProjectile: 0
+  rb: {fileID: 0}

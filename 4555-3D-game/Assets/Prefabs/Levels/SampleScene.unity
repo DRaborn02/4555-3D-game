@@ -127,6 +127,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1358763574361904763, guid: 5216d833019231744af7775717e89520, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2009463094871745888, guid: 5216d833019231744af7775717e89520, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2881861652315858881, guid: 5216d833019231744af7775717e89520, type: 3}
       propertyPath: m_Name
       value: FoodCourtLevel
@@ -171,14 +179,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4776844426889843625, guid: 5216d833019231744af7775717e89520, type: 3}
-      propertyPath: impPrefab
-      value: 
-      objectReference: {fileID: 5251954996915672847, guid: 775ea814021d7274c9c84ed6149fb636, type: 3}
-    - target: {fileID: 8762081018589951868, guid: 5216d833019231744af7775717e89520, type: 3}
-      propertyPath: impPrefab
-      value: 
-      objectReference: {fileID: 5251954996915672847, guid: 775ea814021d7274c9c84ed6149fb636, type: 3}
+    - target: {fileID: 5132620106592520153, guid: 5216d833019231744af7775717e89520, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320524387881042479, guid: 5216d833019231744af7775717e89520, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670077770399880747, guid: 5216d833019231744af7775717e89520, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

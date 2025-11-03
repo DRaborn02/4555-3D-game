@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     private float weaponDamage;
     private float projectileSpeed;
     private float attackCooldown;
+    private float attackRange;
     private bool canAttack = true;
     private GameObject projectilePrefab;
 
@@ -172,12 +173,10 @@ public class PlayerController : MonoBehaviour
             secondaryWeaponDamage = weapon.secondaryDamage;
             secondaryCooldown = weapon.secondaryCooldown;
             heldItemPrefab = weapon.prefab;
+            attackRange = weapon.attackRange;
 
-            if (weapon.type == Weapon.WeaponType.Ranged)
-            {
-                projectileSpeed = weapon.projectileSpeed;
-                projectilePrefab = weapon.projectilePrefab;
-            }
+            projectileSpeed = weapon.projectileSpeed;
+            projectilePrefab = weapon.projectilePrefab;
 
             
         }
@@ -368,19 +367,53 @@ public class PlayerController : MonoBehaviour
 
     private void LightMeleeAttack()
     {
-        //animator.SetTrigger("LightMeleeAttack");
-        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
+        if (projectilePrefab == null || attackSpawnPoint == null)
+        {
+            Debug.LogWarning("Missing projectile prefab or attack spawn point!");
+            return;
+        }
+
+        // Trigger animation and layer blending
+        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f));
         animator.SetTrigger("Attack");
-        //Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.0f);
 
-        //print("Spawning hurtbox");
+        // Spawn at the attackSpawnPoint transform
+        GameObject proj = Instantiate(
+            projectilePrefab,
+            attackSpawnPoint.position,
+            attackSpawnPoint.rotation
+        );
 
-        GameObject hurtboxObj = Instantiate(hurtBoxPrefab, attackSpawnPoint.position, attackSpawnPoint.rotation);
-        HurtBox hurtbox = hurtboxObj.GetComponent<HurtBox>();
-        hurtbox.owner = gameObject;
-        hurtbox.damage = weaponDamage;
-        hurtbox.lifetime = hurtBoxLifetime;
+        // Make the hurtbox larger (3.5× the prefab’s default size)
+        proj.transform.localScale *= attackRange;
+
+        // Configure the HurtBox component
+        var hb = proj.GetComponent<HurtBox>();
+        hb.isProjectile = false; // stationary
+        hb.direction = Vector3.zero;
+        hb.damage = weaponDamage;
+        hb.speed = 0f;
+        hb.lifetime = hurtBoxLifetime;
+        hb.owner = gameObject;
+
+        // Make sure it doesn’t move or simulate physics
+        hb.rb = proj.GetComponent<Rigidbody>();
+        if (hb.rb != null)
+            hb.rb.isKinematic = true;
+
+        // Hide visuals (no mesh or particle effects)
+        foreach (var mr in proj.GetComponentsInChildren<MeshRenderer>())
+            mr.enabled = false;
+
+        foreach (var ps in proj.GetComponentsInChildren<ParticleSystem>())
+            ps.Stop();
+
+        // Destroy after its lifetime ends
+        Destroy(proj, hurtBoxLifetime);
     }
+
+
+
 
     private void HeavyMeleeAttack()
     {

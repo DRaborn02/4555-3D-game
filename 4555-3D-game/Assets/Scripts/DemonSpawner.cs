@@ -58,7 +58,7 @@ public class DemonSpawner : MonoBehaviour
         for (int i = 0; i < impCount; i++)
         {
             Vector2 circle = Random.insideUnitCircle * impSpawnRadius;
-            Vector3 impPos = demonSpawnPos + new Vector3(circle.x, 0, circle.y);
+            Vector3 impPos = demonSpawnPos + new Vector3(circle.x, Random.Range(1.5f, 3f), circle.y);
             GameObject imp = Instantiate(impPrefab, impPos, Quaternion.identity);
             currentImps.Add(imp);
         }

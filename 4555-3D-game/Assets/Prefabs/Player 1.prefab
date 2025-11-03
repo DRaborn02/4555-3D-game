@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 2462552112061120452}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.015, z: 0.42}
+  m_LocalPosition: {x: 0, y: 0.015, z: 0.618}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -239,15 +239,15 @@ MonoBehaviour:
   interactRange: 2
   jumpHeight: 5
   jumpCooldown: 1
-  dashSpeed: 5
-  dashDuration: 0.1
+  dashSpeed: 10
+  dashDuration: 0.25
   dashCooldown: 2
   npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   maxQuarterHearts: 12
   hurtBoxPrefab: {fileID: 8836447578986973661, guid: 464f4b1d14e1f7e4db82192b2eb080b6, type: 3}
   attackSpawnPoint: {fileID: 8851944162800810459}
-  meleeRange: 1.5
-  hurtBoxLifetime: 20
+  meleeRange: 3
+  hurtBoxLifetime: 0.5
   item: {fileID: 0}
 --- !u!114 &3069596806241812566
 MonoBehaviour:
