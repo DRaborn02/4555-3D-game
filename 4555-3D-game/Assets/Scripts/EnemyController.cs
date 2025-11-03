@@ -6,6 +6,8 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] private GameObject hurtbox;
+
     public NavMeshAgent navAgent;
     public RuntimeAnimatorController controller; // assign in inspector or load at runtime
     public Animator animator;
@@ -92,6 +94,8 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
+        if (hurtbox != null)
+            hurtbox.SetActive(false);
         // If an EnemyData ScriptableObject is assigned, apply its values
         if (enemyData != null)
         {
@@ -124,10 +128,12 @@ public class EnemyController : MonoBehaviour
     {
         if (currentState != State.WaitingForPlayer)
         {           
-            playerInSightRange = false; playerInSightRange = false;
-            //print("Distance between player and enemy: " + Vector3.Distance(transform.position, targetPlayer.position));
+            playerInSightRange = false; playerInAttackRange = false;
+            print("Distance between player and enemy: " + Vector3.Distance(transform.position, targetPlayer.position));
             if (Vector3.Distance(transform.position, targetPlayer.position) < sightRange) { playerInSightRange = true; }
             if (Vector3.Distance(transform.position, targetPlayer.position) < attackRange) { playerInAttackRange = true; }
+            print("is player in sight range?: " + playerInSightRange);
+            print("is player in attack range?: " + playerInAttackRange);
 
             if (playerInSightRange && !playerInAttackRange)
             {
@@ -235,19 +241,18 @@ public class EnemyController : MonoBehaviour
             transform.LookAt(lookPos);
         }
 
+        if (!canAttack)
+        {
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", false);
+            animator.SetBool("Attack", false);
+        }
+
         if (!wasAttacked && canAttack)
         {
-            canAttack = false; // prevent immediate re-entry
-            animator.SetBool("Attack", true);
-
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit, attackRange))
-            {
-                //playerHealth.TakeDamage(1);
-            }
-
-            StartCoroutine(AttackCooldown());
+            StartCoroutine(AttackSequence());
         }
+        
     }
 
     public void TakeDamage(float damage)
@@ -270,6 +275,29 @@ public class EnemyController : MonoBehaviour
         StartCoroutine(EnemyDeath());
     }
 
+    private IEnumerator AttackSequence()
+    {
+        canAttack = false; // lock out new attacks
+        animator.SetBool("Attack", true); // start attack animation
+
+        // Wait until the middle of the animation (the "hit" moment)
+        yield return new WaitForSeconds(0.4f); // e.g. 0.4f seconds
+
+        hurtbox.SetActive(true);
+
+        // Keep the hitbox active briefly for the swing duration
+        yield return new WaitForSeconds(0.2f); // e.g. 0.2f seconds
+        hurtbox.SetActive(false);
+
+        // Finish attack animation
+        animator.SetBool("Attack", false);
+
+        // Wait out the rest of the cooldown before next attack
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
+
     IEnumerator CheckForPlayer()
     {
         while (currentState == State.WaitingForPlayer)
@@ -289,9 +317,13 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator AttackCooldown()
     {
+        
+        animator.SetBool("Attack", false);
         canAttack = false;
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
+        animator.SetBool("Attack", true);
+
     }
 
     IEnumerator DamageCooldown()

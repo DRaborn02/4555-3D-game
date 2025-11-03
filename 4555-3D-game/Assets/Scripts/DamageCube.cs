@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DamageCube : MonoBehaviour
 {
-    [SerializeField] private int damageHalfHearts = 1; // 1 = half a heart
+    [SerializeField] private int damageQuarterHearts = 1; // 1 =  1/4th heart
 
     private void OnTriggerEnter(Collider other)
     {
@@ -10,7 +10,7 @@ public class DamageCube : MonoBehaviour
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
         if (playerHealth != null)
         {
-            playerHealth.TakeDamage(damageHalfHearts);
+            playerHealth.TakeDamage(damageQuarterHearts);
         }
     }
 }
