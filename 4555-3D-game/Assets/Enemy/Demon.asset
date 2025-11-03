@@ -20,4 +20,4 @@ MonoBehaviour:
   patrolRange: 10
   navSpeed: 3.5
   rotationSpeed: 5
-  animatorController: {fileID: 0}
+  animatorController: {fileID: 9100000, guid: 9ba07d1560dc74d4cb9a6b19e4a020ae, type: 2}
