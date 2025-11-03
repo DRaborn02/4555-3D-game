@@ -39,13 +39,15 @@ public class FlyingEnemyController : MonoBehaviour
 
         FindNearestPlayer();
         currentState = State.Searching;
-        StartCoroutine(BehaviorLoop());
+        StartCoroutine(StartDelayed());
     }
 
     void Update()
     {
         if (targetPlayer == null)
             FindNearestPlayer();
+
+        MaintainHeightAboveGround();
     }
 
     private void ApplyData()
@@ -57,6 +59,13 @@ public class FlyingEnemyController : MonoBehaviour
         attackCooldown = enemyData.attackCooldown;
         enemyHealth = enemyData.health;
     }
+
+    private IEnumerator StartDelayed()
+    {
+        yield return new WaitForSeconds(Random.Range(0f, 0.5f)); // random delay so they don't all sync up
+        StartCoroutine(BehaviorLoop());
+    }
+
 
     private IEnumerator BehaviorLoop()
     {
@@ -199,6 +208,23 @@ public class FlyingEnemyController : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
     }
+
+    [SerializeField] LayerMask groundMask;      // Assign your ground layer in Inspector
+
+    private void MaintainHeightAboveGround()
+    {
+        // Cast straight down to find the ground
+        if (Physics.Raycast(transform.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f, groundMask))
+        {
+            // Clamp position so it doesn’t rise higher than flightHeight above the ground
+            float desiredY = hit.point.y + flightHeight;
+            Vector3 pos = transform.position;
+            pos.y = Mathf.Min(pos.y, desiredY);
+            transform.position = pos;
+        }
+    }
+
+
 
     private void FaceTarget(Vector3 target)
     {

@@ -155,3 +155,4 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   lifetime: 0.5
   isProjectile: 0
+  rb: {fileID: 0}
