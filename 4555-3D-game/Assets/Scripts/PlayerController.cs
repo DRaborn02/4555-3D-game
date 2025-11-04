@@ -61,8 +61,10 @@ public class PlayerController : MonoBehaviour
     private float secondaryWeaponDamage;
     private float secondaryCooldown;
     private bool canSecondaryAttack = true;
-    
-    
+
+    public Camera mainCamera;
+    public LayerMask groundMask; // Assign your "Ground" layer in Inspector
+
     private int upperBodyLayer;
     private bool isGrounded = true;
     void Awake()
@@ -82,6 +84,13 @@ public class PlayerController : MonoBehaviour
             CameraFollow.Instance.RegisterPlayer(transform);
         if (CameraObstruction.Instance != null)
             CameraObstruction.Instance.RegisterPlayer(transform);
+
+        if (mainCamera == null)
+        {
+            GameObject camObj = GameObject.FindWithTag("MainCamera");
+            if (camObj != null)
+                mainCamera = camObj.GetComponent<Camera>();
+        }
     }
 
     void OnDestroy()
@@ -264,7 +273,7 @@ public class PlayerController : MonoBehaviour
             if (currentlyEquippedItem is Weapon weapon && canAttack)
             {
                 //Debug.Log("Attacking with " + weapon.itemName + " of type " + weapon.type);
-
+                RotateTowardsMouse();
                 // Implement attack logic based on weapon type
                 if (weapon.type == Weapon.WeaponType.LightMelee)
                 {
@@ -489,6 +498,22 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("Fired a special projectile.");
         // Implement special projectile logic here
         // Deal 'secondaryDamage' to enemy
+    }
+
+    private void RotateTowardsMouse()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
+        {
+            Vector3 lookPoint = hit.point;
+            Vector3 direction = (lookPoint - transform.position);
+            direction.y = 0f; // keep rotation flat on the ground
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1f);
+            }
+        }
     }
 
     IEnumerator AttackCooldown()
