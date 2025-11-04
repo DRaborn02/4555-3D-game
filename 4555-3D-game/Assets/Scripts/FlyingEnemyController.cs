@@ -32,8 +32,12 @@ public class FlyingEnemyController : MonoBehaviour
     private enum State { Searching, Hovering, Chasing, Attacking }
     private State currentState;
 
+    private EnemyHealth enemyHealthScript;
+
     void Start()
     {
+        enemyHealthScript = GetComponent<EnemyHealth>();
+
         if (hurtbox != null) hurtbox.SetActive(false);
         ApplyData();
 
@@ -44,6 +48,15 @@ public class FlyingEnemyController : MonoBehaviour
 
     void Update()
     {
+        if (enemyHealthScript != null && enemyHealthScript.IsInvulnerable)
+        {
+            print("Invulnerable");
+            // Enemy is currently invulnerable from taking damage
+            currentState = State.Hovering;
+            animator.SetBool("Attack", false);
+            return;
+        }
+
         if (targetPlayer == null)
             FindNearestPlayer();
 
@@ -184,7 +197,16 @@ public class FlyingEnemyController : MonoBehaviour
         }
 
         Vector3 desiredPos = targetPlayer.position + Vector3.up * flightHeight;
-        MoveToward(desiredPos);
+
+        if (enemyHealthScript != null && enemyHealthScript.IsInvulnerable)
+        {
+
+        }
+        else
+        {
+            MoveToward(desiredPos);
+        }
+            
         FaceTarget(targetPlayer.position);
         animator.SetBool("Fly", true);
     }
@@ -195,10 +217,18 @@ public class FlyingEnemyController : MonoBehaviour
         animator.SetTrigger("Attack");
 
         yield return new WaitForSeconds(0.4f);
+        if (enemyHealthScript != null && enemyHealthScript.IsInvulnerable)
+        {
+            if (hurtbox != null) hurtbox.SetActive(false);
+        }
+        else
+        { 
         if (hurtbox != null) hurtbox.SetActive(true);
 
         yield return new WaitForSeconds(0.2f);
         if (hurtbox != null) hurtbox.SetActive(false);
+
+        }
 
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;

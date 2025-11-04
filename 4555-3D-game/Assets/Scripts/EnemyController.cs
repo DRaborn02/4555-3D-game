@@ -29,6 +29,8 @@ public class EnemyController : MonoBehaviour
     private float attackCooldown = 1.5f;
     private float damageCooldown = 1.0f;
 
+    private EnemyHealth enemyHealthScript;
+
     private enum State
     {
         WaitingForPlayer,
@@ -43,6 +45,8 @@ public class EnemyController : MonoBehaviour
 
     void Awake()
     {
+        enemyHealthScript = GetComponent<EnemyHealth>();
+
         // cache components - per instance
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -135,7 +139,12 @@ public class EnemyController : MonoBehaviour
             //print("is player in sight range?: " + playerInSightRange);
             //print("is player in attack range?: " + playerInAttackRange);
 
-            if (playerInSightRange && !playerInAttackRange)
+            if (enemyHealthScript != null && enemyHealthScript.IsInvulnerable)
+            {
+                // Enemy is currently invulnerable from taking damage
+                animator.SetBool("Attack", false);
+            }
+            else if (playerInSightRange && !playerInAttackRange)
             {
                 currentState = State.Chasing;
                 //Debug.Log("Player in sight range but not attack range. Chasing.");
@@ -143,6 +152,7 @@ public class EnemyController : MonoBehaviour
             }
             else if (playerInAttackRange && playerInSightRange)
             {
+                
                 currentState = State.Attacking;
                 //Debug.Log("Player in attack or sight range. Attacking.");
                 AttackPlayer();
@@ -261,6 +271,11 @@ public class EnemyController : MonoBehaviour
         enemyHealth -= damage;
         StartCoroutine(DamageCooldown());
 
+        animator.SetBool("Walk", false);
+        animator.SetBool("Run", false);
+        animator.SetBool("Attack", false);
+        navAgent.SetDestination(transform.position);
+
         if (enemyHealth <= 0)
         {
             // Trigger death animation, then destroy in coroutine
@@ -283,7 +298,15 @@ public class EnemyController : MonoBehaviour
         // Wait until the middle of the animation (the "hit" moment)
         yield return new WaitForSeconds(0.4f); // e.g. 0.4f seconds
 
-        hurtbox.SetActive(true);
+        if (enemyHealthScript != null && enemyHealthScript.IsInvulnerable)
+        {
+            hurtbox.SetActive(false);
+        }
+        else
+        {
+            hurtbox.SetActive(true);
+        }
+        
 
         // Keep the hitbox active briefly for the swing duration
         yield return new WaitForSeconds(0.2f); // e.g. 0.2f seconds
