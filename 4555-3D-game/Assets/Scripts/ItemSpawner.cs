@@ -7,6 +7,8 @@ public class ItemSpawner : MonoBehaviour
     public Transform spawnPoint; // where the prefab appears
     [SerializeField] Transform spawnArea; // assign your SpawnArea child here
     private Bounds areaBounds;
+    [Range(0f, 1f)] public float spawnChance = 0.50f;
+    public bool canSpawn = true;
 
     public int currentLevel = 1; // set this when the level loads
     void Awake()
@@ -22,9 +24,20 @@ public class ItemSpawner : MonoBehaviour
 
     void Start()
     {
-        SpawnItemForCurrentLevel();
+        TrySpawn();
         if (meshRenderer != null)
             meshRenderer.enabled = false;
+    }
+
+    public bool TrySpawn()
+    {
+        if (!canSpawn) return false;
+
+        if (Random.value > spawnChance)
+            return false;
+
+        SpawnItemForCurrentLevel();
+        return true;
     }
 
     Vector3 GetRandomPointInArea()
