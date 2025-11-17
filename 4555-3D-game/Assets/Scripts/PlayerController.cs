@@ -315,6 +315,10 @@ public class PlayerController : MonoBehaviour
                 }
                 attackInput = 0; // Reset attack input after processing
             }
+            else             
+            {
+                attackInput = 0;
+            }
         }
 
         if (secondaryAttackInput > 0)
