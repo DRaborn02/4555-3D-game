@@ -77,6 +77,24 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
+    public void RemoveItem(Item item)
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == item)
+            {
+                slots[i] = null;
+                RefreshUI();
+                return;
+            }
+        }
+        if (equipmentSlot == item)
+        {
+            equipmentSlot = null;
+            RefreshUI();
+        }
+    }
+
     public void DropItem(Item item)
     {
         if (item == null) return;
