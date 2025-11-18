@@ -49,9 +49,11 @@ MonoBehaviour:
   impPrefab: {fileID: 5251954996915672847, guid: 775ea814021d7274c9c84ed6149fb636, type: 3}
   spawnPoint: {fileID: 0}
   respawnDelay: 3
-  autoRespawn: 1
+  autoRespawn: 0
   impCount: 3
   impSpawnRadius: 2
+  spawnChance: 0.75
+  canSpawn: 1
 --- !u!1 &638880662140787470
 GameObject:
   m_ObjectHideFlags: 0

@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
     private float attackRange;
     private bool canAttack = true;
     private GameObject projectilePrefab;
+    private int healthGain;
 
     private float secondaryAttackInput;
     private float secondaryWeaponDamage;
@@ -224,6 +225,11 @@ public class PlayerController : MonoBehaviour
 
             
         }
+        else if (currentlyEquippedItem is Consumable consumable)
+        {
+            healthGain = consumable.healthGain;
+
+        }
         else
         {
             // Clear weapon stats if unequipped
@@ -233,6 +239,7 @@ public class PlayerController : MonoBehaviour
             secondaryCooldown = 0f;
             heldItemPrefab = null;
         }
+        
     }
 
     public void OnAttack()
@@ -333,6 +340,22 @@ public class PlayerController : MonoBehaviour
                 }
                 attackInput = 0; // Reset attack input after processing
                 StartCoroutine(AttackCooldown());
+            }
+            else if (currentlyEquippedItem is Consumable consumable)
+            {
+                // Use consumable
+                var health = GetComponent<PlayerHealth>();
+                if (health != null)
+                {
+                    health.Heal(healthGain);
+                    inventory.RemoveItem(consumable);
+                    SetEquippedItem(null, null); // Unequip after use
+                }
+                attackInput = 0; // Reset attack input after processing
+            }
+            else             
+            {
+                attackInput = 0;
             }
         }
 

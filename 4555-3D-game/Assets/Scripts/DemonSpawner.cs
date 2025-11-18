@@ -23,6 +23,11 @@ public class DemonSpawner : MonoBehaviour
     [SerializeField] private AudioClip waveCompleteSound;
     [SerializeField] private float soundVolume = 1f;
     */
+    
+    [Range(0f, 1f)] public float spawnChance = 0.75f;
+    public bool canSpawn = true;
+
+
     private GameObject currentDemon;
     private readonly List<GameObject> currentImps = new List<GameObject>();
     private bool isSpawning;
@@ -31,6 +36,28 @@ public class DemonSpawner : MonoBehaviour
     {
         SpawnWave();
     }
+
+    public bool TrySpawn()
+    {
+        if (!canSpawn) return false;
+
+        if (Random.value > spawnChance)
+            return false;
+
+        SpawnWave();
+        return true;
+    }
+
+    public bool IsWaveCleared()
+    {
+        if (currentDemon != null)
+            return false;
+
+        currentImps.RemoveAll(i => i == null);
+
+        return currentImps.Count == 0;
+    }
+
 
     void Update()
     {
@@ -58,7 +85,7 @@ public class DemonSpawner : MonoBehaviour
         return currentImps.Count == 0;
     }
 
-    private void SpawnWave()
+    public void SpawnWave()
     {
         isSpawning = false;
 
