@@ -4,6 +4,14 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] private AudioClip playerHurtSound;
+    [SerializeField] private AudioClip playerHealSound;
+    
+    // not used until death is implemented
+    //[SerializeField] private AudioClip playerDeathSound;
+    [SerializeField] private float soundVolume = 1f;
+
     private int maxQuarterHearts;
     private int currentQuarterHearts;
     private PlayerUIManager uiManager;
@@ -19,6 +27,13 @@ public class PlayerHealth : MonoBehaviour
     {
         currentQuarterHearts = Mathf.Max(currentQuarterHearts - quarterHearts, 0);
         uiManager.UpdateHealthUI(this, input.playerIndex);
+        
+        // hurt sound
+        if (playerHurtSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(playerHurtSound, soundVolume);
+        }
+
         // print("Player " + input.playerIndex + " took damage, current health: " + currentQuarterHearts);
     }
 
@@ -26,7 +41,14 @@ public class PlayerHealth : MonoBehaviour
     {
         currentQuarterHearts = Mathf.Min(currentQuarterHearts + quarterHearts, maxQuarterHearts);
         uiManager.UpdateHealthUI(this, input.playerIndex);
+        
+        // Play heal sound
+        if (playerHealSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(playerHealSound, soundVolume);
+        }
     }
+    
 
     public int getMaxHealth()
     {

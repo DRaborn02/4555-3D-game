@@ -4,6 +4,10 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] private AudioClip weaponSwapSound;
+    [SerializeField] private float soundVolume = 1f;
+
     [SerializeField] private int defaultSlotCount = 3;
     private Item[] slots;
     private Item equipmentSlot;
@@ -156,6 +160,7 @@ public class Inventory : MonoBehaviour
         if (slots[currentIndex] != null)
         {
             //print("We have an item in the current slot, equipping it");
+            PlayWeaponSwapSound();
             equipItem();
         }
     }
@@ -180,6 +185,7 @@ public class Inventory : MonoBehaviour
         if (slots[currentIndex] != null)
         {
             //print("We have an item in the current slot, equipping it");
+            PlayWeaponSwapSound();
             equipItem();
         }
     }
@@ -224,6 +230,15 @@ public class Inventory : MonoBehaviour
         if (playerController != null)
         {
             playerController.SetEquippedItem(item, instance);
+        }
+    }
+    
+    private void PlayWeaponSwapSound()
+    {
+        // Play weapon swap sound when changing slots
+        if (weaponSwapSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(weaponSwapSound, soundVolume);
         }
     }
 }

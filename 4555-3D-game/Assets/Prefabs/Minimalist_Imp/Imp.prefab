@@ -95,6 +95,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 8
+  invulnerabilityDuration: 1
+  flashInterval: 0.2
+  demonHurtSound: {fileID: 8300000, guid: c20376bd69600495098ca49a0da95ce0, type: 3}
+  demonDeathSound: {fileID: 8300000, guid: d5e7e2e6a5fd44c218ad12479a84869f, type: 3}
+  impHurtSound: {fileID: 8300000, guid: 0d90480719e5d4c68bf72cce89a030dc, type: 3}
+  impDeathSound: {fileID: 8300000, guid: 7fe38614c04c446e2abfd4bc686479d9, type: 3}
+  soundVolume: 1
 --- !u!114 &9071313124280466598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,6 +126,9 @@ MonoBehaviour:
   sightRange: 6
   attackCooldown: 1.5
   enemyHealth: 5
+  impSwingSound: {fileID: 8300000, guid: a3dfde86ab8e6419c827ac765f7ac270, type: 3}
+  impAmbientSound: {fileID: 8300000, guid: 202f342bce9084d74852aaf0d74390bf, type: 3}
+  soundVolume: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 256

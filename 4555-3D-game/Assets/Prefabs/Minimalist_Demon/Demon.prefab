@@ -124,6 +124,9 @@ MonoBehaviour:
   playerHealth: {fileID: 0}
   rotationSpeed: 5
   enemyData: {fileID: 11400000, guid: a77cf8ead0485024d80f62cc6b41aa43, type: 2}
+  demonSwingSound: {fileID: 8300000, guid: 96b609f8e37ff4147ab0273bd87975b1, type: 3}
+  demonAmbientSound: {fileID: 8300000, guid: efae22b287f1342a7bc77740be7f416c, type: 3}
+  soundVolume: 1
 --- !u!114 &8505259699177614960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +140,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 16
+  invulnerabilityDuration: 1
+  flashInterval: 0.2
+  demonHurtSound: {fileID: 8300000, guid: c20376bd69600495098ca49a0da95ce0, type: 3}
+  demonDeathSound: {fileID: 8300000, guid: d5e7e2e6a5fd44c218ad12479a84869f, type: 3}
+  impHurtSound: {fileID: 8300000, guid: 0d90480719e5d4c68bf72cce89a030dc, type: 3}
+  impDeathSound: {fileID: 8300000, guid: 7fe38614c04c446e2abfd4bc686479d9, type: 3}
+  soundVolume: 1
 --- !u!1 &8167685811065887776
 GameObject:
   m_ObjectHideFlags: 0

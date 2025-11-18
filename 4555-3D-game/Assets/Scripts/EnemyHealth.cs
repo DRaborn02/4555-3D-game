@@ -12,11 +12,33 @@ public class EnemyHealth : MonoBehaviour
     public float flashInterval = 0.2f;
     private bool isInvulnerable = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip demonHurtSound;
+    
+    [SerializeField] private AudioClip demonDeathSound;
+    [SerializeField] private AudioClip impHurtSound;
+
+
+
+    [SerializeField] private AudioClip impDeathSound;
+    [SerializeField] private float soundVolume = 1f;
+
     private Renderer[] renderers;
     private Color[] originalColors;
 
     // Public property for other scripts to check
     public bool IsInvulnerable => isInvulnerable;
+    
+    //check for demon/imp
+    private bool IsDemon()
+    {
+        return GetComponent<EnemyController>() != null;
+    }
+    
+    private bool IsImp()
+    {
+        return GetComponent<FlyingEnemyController>() != null;
+    }
 
     void Start()
     {
@@ -41,6 +63,16 @@ public class EnemyHealth : MonoBehaviour
         {
             Die();
             return;
+        }
+
+        // Play hurt sound based on enemy type
+        if (IsDemon() && demonHurtSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(demonHurtSound, soundVolume);
+        }
+        else if (IsImp() && impHurtSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(impHurtSound, soundVolume);
         }
 
         StartCoroutine(FlashAndInvulnerability());
@@ -74,6 +106,16 @@ public class EnemyHealth : MonoBehaviour
 
     private void Die()
     {
+        
+        if (IsDemon() && demonDeathSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(demonDeathSound, soundVolume);
+        }
+        else if (IsImp() && impDeathSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(impDeathSound, soundVolume);
+        }
+        
         Destroy(gameObject);
     }
 }
