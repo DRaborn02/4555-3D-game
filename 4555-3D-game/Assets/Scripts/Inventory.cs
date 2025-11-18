@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private AudioClip weaponSwapSound;
     [SerializeField] private float soundVolume = 1f;
 
-    [SerializeField] private int defaultSlotCount = 3;
+    [SerializeField] private int defaultSlotCount = 4;
     private ItemInstance[] slots;
     private ItemInstance equipmentSlot;
     private int currentIndex = 0;
@@ -27,11 +27,30 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Color defaultColor = Color.white;
     [SerializeField] private Color selectedColor = Color.yellow;
 
+    [SerializeField] private Item defaultStartingItem;
+
+
     void Awake()
     {
         slots = new ItemInstance[defaultSlotCount];
         //handTransform = transform.Find("Hand"); // Default to a child named "Hand"
+
+        // Give the player the starting item (slot 0)
+        if (defaultStartingItem != null)
+        {
+            slots[0] = new ItemInstance(defaultStartingItem);
+        }
     }
+    void Start()
+    {
+        RefreshUI();
+
+        if (slots[0] != null)
+        {
+            equipItem();
+        }
+    }
+
 
     public void BindUI(GameObject uiRoot)
     {
@@ -67,6 +86,8 @@ public class Inventory : MonoBehaviour
 
     public bool AddItem(Item item)
     {
+        
+
         ItemInstance instance = new ItemInstance(item);  // ← NEW
 
         if (item is Equipment)
@@ -80,7 +101,7 @@ public class Inventory : MonoBehaviour
         }
 
         // Find first empty slot
-        for (int i = 0; i < slots.Length; i++)
+        for (int i = 1; i < slots.Length; i++)
         {
             if (slots[i] == null)
             {
@@ -92,8 +113,10 @@ public class Inventory : MonoBehaviour
         }
 
         // Inventory full → drop and replace
-        DropItem(slots[currentIndex].baseItem);
-        slots[currentIndex] = instance;
+        int itemToReplace = currentIndex;
+        if (currentIndex == 0) { itemToReplace++; }
+        DropItem(slots[itemToReplace].baseItem);
+        slots[itemToReplace] = instance;
         RefreshUI();
         equipItem();
         return true;
@@ -123,6 +146,13 @@ public class Inventory : MonoBehaviour
     public void DropItem(Item item)
     {
         if (item == null) return;
+
+        // Prevent dropping item in slot 0
+        //if (slots[0] != null && slots[0].baseItem == item)
+        //{
+        //    Debug.Log("Cannot drop starting weapon.");
+        //    return;
+        //}
 
         if (item.prefab != null)
         {
@@ -164,6 +194,14 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < slots.Length; i++)
         {
             ItemInstance instance = slots[i];
+
+            // Slot 0: NEVER show durability, even for weapons
+            if (i == 0)
+            {
+                if (durabilityBGs[i] != null) durabilityBGs[i].enabled = false;
+                if (durabilityFills[i] != null) durabilityFills[i].enabled = false;
+                continue;
+            }
 
             // No item in slot
             if (instance == null || !(instance.baseItem is Weapon weapon))
