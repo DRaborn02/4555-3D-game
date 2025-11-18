@@ -1302,6 +1302,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &961733475500032198
 GameObject:
   m_ObjectHideFlags: 0
@@ -1647,6 +1652,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &1038663992971714864
 GameObject:
   m_ObjectHideFlags: 0
@@ -2318,6 +2328,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &1215110623589801088
 GameObject:
   m_ObjectHideFlags: 0
@@ -3377,6 +3392,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &1783194133178741972
 GameObject:
   m_ObjectHideFlags: 0
@@ -3609,6 +3629,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &1915658221696291337
 GameObject:
   m_ObjectHideFlags: 0
@@ -4252,6 +4277,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &2142721803273903937
 GameObject:
   m_ObjectHideFlags: 0
@@ -5315,6 +5345,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &2855170968447527358
 GameObject:
   m_ObjectHideFlags: 0
@@ -5470,6 +5505,7 @@ Transform:
   - {fileID: 7726865303995622685}
   - {fileID: 5559088648676793543}
   - {fileID: 1246370175027065003}
+  - {fileID: 528304562593414345}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2912137583225390739
@@ -6111,6 +6147,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &3616605518833140517
 GameObject:
   m_ObjectHideFlags: 0
@@ -6558,6 +6599,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &3819610357624034882
 GameObject:
   m_ObjectHideFlags: 0
@@ -7086,6 +7132,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &4302132271451274450
 GameObject:
   m_ObjectHideFlags: 0
@@ -8023,6 +8074,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &4971554215159148284
 GameObject:
   m_ObjectHideFlags: 0
@@ -8799,6 +8855,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &5371664505770674120
 GameObject:
   m_ObjectHideFlags: 0
@@ -9249,6 +9310,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &5524333850717258099
 GameObject:
   m_ObjectHideFlags: 0
@@ -9540,6 +9606,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &5611936594766454510
 GameObject:
   m_ObjectHideFlags: 0
@@ -11024,6 +11095,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &7259467263090023803
 GameObject:
   m_ObjectHideFlags: 0
@@ -11961,6 +12037,11 @@ MonoBehaviour:
   maxHealth: 10
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &8026294751585680214
 GameObject:
   m_ObjectHideFlags: 0
@@ -12452,6 +12533,11 @@ MonoBehaviour:
   maxHealth: 2
   invulnerabilityDuration: 0.5
   flashInterval: 0.1
+  demonHurtSound: {fileID: 0}
+  demonDeathSound: {fileID: 0}
+  impHurtSound: {fileID: 0}
+  impDeathSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1 &8253846923349350087
 GameObject:
   m_ObjectHideFlags: 0
@@ -13092,6 +13178,68 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1001 &1622260835906461760
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4382690872400909164}
+    m_Modifications:
+    - target: {fileID: 849077203229896876, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -39.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+--- !u!4 &528304562593414345 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1285645278759787657, guid: db77079c99e459f4888f6f3c19082053, type: 3}
+  m_PrefabInstance: {fileID: 1622260835906461760}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2071331835846847963
 PrefabInstance:
   m_ObjectHideFlags: 0
