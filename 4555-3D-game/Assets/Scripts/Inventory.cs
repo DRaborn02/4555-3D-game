@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private int defaultSlotCount = 3;
-    private Item[] slots;
-    private Item equipmentSlot;
+    private ItemInstance[] slots;
+    private ItemInstance equipmentSlot;
     private int currentIndex = 0;
     private GameObject currentlyHeldItem;
     public Transform handTransform; // Transform where the item will be held
@@ -14,44 +14,63 @@ public class Inventory : MonoBehaviour
     private Image[] slotImages;
     private Image equipmentImage;
 
+    private Image[] durabilityBGs;
+    private Image[] durabilityFills;
+    private Image equipDurabilityBG;
+    private Image equipDurabilityFill;
+
+
     [SerializeField] private Color defaultColor = Color.white;
     [SerializeField] private Color selectedColor = Color.yellow;
 
     void Awake()
     {
-        slots = new Item[defaultSlotCount];
+        slots = new ItemInstance[defaultSlotCount];
         //handTransform = transform.Find("Hand"); // Default to a child named "Hand"
     }
 
     public void BindUI(GameObject uiRoot)
     {
-        Transform slotsParent = uiRoot.transform.Find("MainPanel").Find("InventoryPanel");
+        Transform slotsParent = uiRoot.transform.Find("MainPanel/InventoryPanel");
 
-        // Make sure we only pull the direct child slot images (Slot0, Slot1, Slot2)
+        // Initialize arrays
         slotImages = new Image[defaultSlotCount];
+        durabilityBGs = new Image[defaultSlotCount];
+        durabilityFills = new Image[defaultSlotCount];
+
         for (int i = 0; i < defaultSlotCount; i++)
         {
-            slotImages[i] = slotsParent.Find("Slot" + i).GetComponent<Image>();
+            Transform slot = slotsParent.Find("Slot" + i);
+
+            // Slot image
+            slotImages[i] = slot.GetComponent<Image>();
+
+            // Durability BG (direct child of Slot)
+            durabilityBGs[i] = slot.Find("DurabilityBG")?.GetComponent<Image>();
+
+            // Durability Fill (child of DurabilityBG)
+            durabilityFills[i] = slot.Find("DurabilityBG/DurabilityFill")?.GetComponent<Image>();
         }
 
-        equipmentImage = uiRoot.transform.Find("MainPanel").Find("EquipmentPanel").Find("Slot0").GetComponent<Image>();
+        // Equipment slot
+        equipmentImage = uiRoot.transform.Find("MainPanel/EquipmentPanel/Slot0")
+                                         .GetComponent<Image>();
 
         RefreshUI();
     }
 
 
+
     public bool AddItem(Item item)
     {
+        ItemInstance instance = new ItemInstance(item);  // ← NEW
+
         if (item is Equipment)
         {
             if (equipmentSlot != null)
-            {
-                // Drop current equipment
-                DropItem(equipmentSlot);
-            }
+                DropItem(equipmentSlot.baseItem);
 
-            equipmentSlot = item;
-            //Debug.Log("Equipped " + item.itemName);
+            equipmentSlot = instance;
             RefreshUI();
             return true;
         }
@@ -61,39 +80,41 @@ public class Inventory : MonoBehaviour
         {
             if (slots[i] == null)
             {
-                slots[i] = item;
-                //Debug.Log("Picked up " + item.itemName);
+                slots[i] = instance;   // ← store instance, not item
                 RefreshUI();
                 equipItem();
                 return true;
             }
         }
 
-        // Inventory full → drop current item
-        DropItem(slots[currentIndex]);
-        slots[currentIndex] = item;
+        // Inventory full → drop and replace
+        DropItem(slots[currentIndex].baseItem);
+        slots[currentIndex] = instance;
         RefreshUI();
         equipItem();
         return true;
     }
 
+
     public void RemoveItem(Item item)
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            if (slots[i] == item)
+            if (slots[i] != null && slots[i].baseItem == item)
             {
                 slots[i] = null;
                 RefreshUI();
                 return;
             }
         }
-        if (equipmentSlot == item)
+
+        if (equipmentSlot != null && equipmentSlot.baseItem == item)
         {
             equipmentSlot = null;
             RefreshUI();
         }
     }
+
 
     public void DropItem(Item item)
     {
@@ -109,16 +130,16 @@ public class Inventory : MonoBehaviour
         //Debug.Log("Dropped " + item.itemName);
     }
 
-    private void RefreshUI()
+    public void RefreshUI()
     {
         if (slotImages != null)
         {
             for (int i = 0; i < slotImages.Length; i++)
             {
-                if (slots[i] != null && slots[i].icon != null)
-                    slotImages[i].sprite = slots[i].icon;
+                if (slots[i] != null && slots[i].baseItem.icon != null)
+                    slotImages[i].sprite = slots[i].baseItem.icon;
                 else
-                    slotImages[i].sprite = null; // clear slot
+                    slotImages[i].sprite = null;
 
                 slotImages[i].color = defaultColor; //clear color
             }
@@ -129,11 +150,38 @@ public class Inventory : MonoBehaviour
 
         if (equipmentImage != null)
         {
-            if (equipmentSlot != null && equipmentSlot.icon != null)
-                equipmentImage.sprite = equipmentSlot.icon;
+            if (equipmentSlot != null && equipmentSlot.baseItem.icon != null)
+                equipmentImage.sprite = equipmentSlot.baseItem.icon;
             else
                 equipmentImage.sprite = null;
         }
+
+        // Update durability bars for each inventory slot
+        for (int i = 0; i < slots.Length; i++)
+        {
+            ItemInstance instance = slots[i];
+
+            // No item in slot
+            if (instance == null || !(instance.baseItem is Weapon weapon))
+            {
+                if (durabilityBGs[i] != null) durabilityBGs[i].enabled = false;
+                if (durabilityFills[i] != null) durabilityFills[i].enabled = false;
+                continue;
+            }
+
+            // Item is a weapon → update durability
+            if (durabilityBGs[i] != null) durabilityBGs[i].enabled = true;
+            if (durabilityFills[i] != null)
+            {
+                durabilityFills[i].enabled = true;
+                durabilityFills[i].fillAmount =
+                    (float)instance.durability / weapon.maxDurability;
+            }
+        }
+
+
+
+
     }
 
     public void OnNextSlot()
@@ -193,7 +241,7 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    public Item GetCurrentItem() => slots[currentIndex];
+    public ItemInstance GetCurrentItem() => slots[currentIndex];
 
     public void equipItem()
     {
@@ -201,8 +249,9 @@ public class Inventory : MonoBehaviour
         {
             Destroy(currentlyHeldItem);
         }
-        
-        Item item = GetCurrentItem();
+
+        ItemInstance instanceData = GetCurrentItem();
+        Item item = instanceData.baseItem;
         //Debug.Log("Equipped item: " + item.itemName);
 
         // Instantiate held prefab (if any) under the hand transform
@@ -223,7 +272,7 @@ public class Inventory : MonoBehaviour
         PlayerController playerController = GetComponent<PlayerController>();
         if (playerController != null)
         {
-            playerController.SetEquippedItem(item, instance);
+            playerController.SetEquippedItem(instanceData, instance);
         }
     }
 }

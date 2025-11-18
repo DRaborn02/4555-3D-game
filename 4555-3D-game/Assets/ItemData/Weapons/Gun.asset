@@ -22,6 +22,8 @@ MonoBehaviour:
   swingSpeed: 0
   cooldown: 0.5
   secondaryCooldown: 8
-  projectileSpeed: 4
+  projectileSpeed: 15
   attackRange: 0
   projectilePrefab: {fileID: 9035958555467244163, guid: ccd2b476e55bee04a8a0b838ffbba5a3, type: 3}
+  maxDurability: 10
+  currentDurability: 10

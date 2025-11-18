@@ -14,4 +14,7 @@ public class Weapon : Item
     public float projectileSpeed;
     public float attackRange;
     public GameObject projectilePrefab;
+
+    public int maxDurability;
+    public int currentDurability;
 }

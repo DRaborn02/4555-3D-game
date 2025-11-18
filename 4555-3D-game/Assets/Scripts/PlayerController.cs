@@ -40,7 +40,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Inventory inventory;
     [SerializeField] private Item item;
-    private Item currentlyEquippedItem;
+    public ItemInstance equippedItemInstance;
+    public Item equippedItem => equippedItemInstance?.baseItem; // shortcut
+
     private GameObject currentlyEquippedObject;
     private GameObject heldItemPrefab;
     private float jumpInput;
@@ -162,22 +164,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SetEquippedItem(Item newItem, GameObject instance)
+    public void SetEquippedItem(ItemInstance newItemInstance, GameObject instance)
     {
+        // Destroy previous visual instance if needed
         if (currentlyEquippedObject != null && currentlyEquippedObject != instance)
         {
             Destroy(currentlyEquippedObject);
         }
 
-        currentlyEquippedItem = newItem;
-        item = newItem; 
+        equippedItemInstance = newItemInstance;
         currentlyEquippedObject = instance;
 
-        //Debug.Log("Equipped item: " + (currentlyEquippedItem != null ? currentlyEquippedItem.itemName : "none"));
+        Item item = equippedItemInstance?.baseItem;
 
-        if (currentlyEquippedItem is Weapon weapon)
+        if (item is Weapon weapon)
         {
-            //Debug.Log("Equipped weapon: " + weapon.itemName);
             weaponDamage = weapon.damage;
             attackCooldown = weapon.cooldown;
             secondaryWeaponDamage = weapon.secondaryDamage;
@@ -188,24 +189,23 @@ public class PlayerController : MonoBehaviour
             projectileSpeed = weapon.projectileSpeed;
             projectilePrefab = weapon.projectilePrefab;
 
-            
+            //Debug.Log($"Equipped {weapon.itemName} with durability {equippedItemInstance.durability}/{weapon.maxDurability}");
         }
-        else if (currentlyEquippedItem is Consumable consumable)
+        else if (item is Consumable consumable)
         {
             healthGain = consumable.healthGain;
-
         }
         else
         {
-            // Clear weapon stats if unequipped
+            // Clear stats
             weaponDamage = 0f;
             attackCooldown = 0f;
             secondaryWeaponDamage = 0f;
             secondaryCooldown = 0f;
             heldItemPrefab = null;
         }
-        
     }
+
 
     public void OnAttack()
     {
@@ -277,33 +277,50 @@ public class PlayerController : MonoBehaviour
 
         if (attackInput > 0)
         {
-            if (currentlyEquippedItem is Weapon weapon && canAttack)
+            var weapon = equippedItemInstance?.baseItem as Weapon;
+            if (weapon != null && canAttack)
             {
-                //Debug.Log("Attacking with " + weapon.itemName + " of type " + weapon.type);
+
+                // Attack like normal...
                 RotateTowardsMouse();
-                // Implement attack logic based on weapon type
+
                 if (weapon.type == Weapon.WeaponType.LightMelee)
                 {
-                    // Light melee attack logic
-                    //Debug.Log("Performing light melee attack.");
                     LightMeleeAttack();
+                    // Reduce durability
+                    equippedItemInstance.durability -= 1;
+                    inventory.RefreshUI();
                 }
                 else if (weapon.type == Weapon.WeaponType.HeavyMelee)
                 {
-                    // Heavy melee attack logic
-                    //Debug.Log("Performing heavy melee attack.");
                     HeavyMeleeAttack();
+                    // Reduce durability
+                    equippedItemInstance.durability -= 1;
+                    inventory.RefreshUI();
                 }
                 else if (weapon.type == Weapon.WeaponType.Ranged)
                 {
-                    // Ranged attack logic
-                    //Debug.Log("Performing ranged attack.");
                     RangedAttack();
+                    // Reduce durability
+                    equippedItemInstance.durability -= 1;
+                    inventory.RefreshUI();
                 }
-                attackInput = 0; // Reset attack input after processing
+
+
+                    //Debug.Log($"{weapon.itemName} durability: {equippedItemInstance.durability}/{weapon.maxDurability}");
+
+                if (equippedItemInstance.durability <= 0)
+                {
+                    Debug.Log($"{weapon.itemName} broke!");
+                    inventory.RemoveItem(weapon);
+                    SetEquippedItem(null, null);
+                }
+
+                attackInput = 0;
                 StartCoroutine(AttackCooldown());
             }
-            else if (currentlyEquippedItem is Consumable consumable)
+
+            else if (equippedItemInstance?.baseItem is Consumable consumable)
             {
                 // Use consumable
                 var health = GetComponent<PlayerHealth>();
@@ -321,39 +338,39 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (secondaryAttackInput > 0)
-        {
-            if (currentlyEquippedItem is Weapon weapon && canSecondaryAttack)
-            {
-                //Debug.Log("Performing secondary attack with " + weapon.itemName);
+        //if (secondaryAttackInput > 0)
+        //{
+        //    if (currentlyEquippedItem is Weapon weapon && canSecondaryAttack)
+        //    {
+        //        //Debug.Log("Performing secondary attack with " + weapon.itemName);
 
-                // Implement secondary attack logic based on weapon type
-                if (weapon.type == Weapon.WeaponType.LightMelee)
-                {
-                    // Light melee secondary attack logic
-                    //Debug.Log("Performing light melee secondary attack.");
-                    SecondaryLMAttack();
-                }
-                else if (weapon.type == Weapon.WeaponType.HeavyMelee)
-                {
-                    // Heavy melee secondary attack logic
-                    //Debug.Log("Performing heavy melee secondary attack.");
-                    SecondaryHMAttack();
-                }
-                else if (weapon.type == Weapon.WeaponType.Ranged)
-                {
-                    // Ranged secondary attack logic
-                    //Debug.Log("Performing ranged secondary attack.");
-                    SecondaryRangedAttack();
-                }
-                secondaryAttackInput = 0; // Reset secondary attack input after processing
-                StartCoroutine(SecondaryCooldown());
-            }
-            else
-            {
-                canSecondaryAttack = false;
-            }
-        }
+        //        // Implement secondary attack logic based on weapon type
+        //        if (weapon.type == Weapon.WeaponType.LightMelee)
+        //        {
+        //            // Light melee secondary attack logic
+        //            //Debug.Log("Performing light melee secondary attack.");
+        //            SecondaryLMAttack();
+        //        }
+        //        else if (weapon.type == Weapon.WeaponType.HeavyMelee)
+        //        {
+        //            // Heavy melee secondary attack logic
+        //            //Debug.Log("Performing heavy melee secondary attack.");
+        //            SecondaryHMAttack();
+        //        }
+        //        else if (weapon.type == Weapon.WeaponType.Ranged)
+        //        {
+        //            // Ranged secondary attack logic
+        //            //Debug.Log("Performing ranged secondary attack.");
+        //            SecondaryRangedAttack();
+        //        }
+        //        secondaryAttackInput = 0; // Reset secondary attack input after processing
+        //        StartCoroutine(SecondaryCooldown());
+        //    }
+        //    else
+        //    {
+        //        canSecondaryAttack = false;
+        //    }
+        //}
     }
 
     // Check if the player is grounded using a raycast
@@ -399,6 +416,9 @@ public class PlayerController : MonoBehaviour
 
     private void LightMeleeAttack()
     {
+        Weapon weapon = equippedItemInstance.baseItem as Weapon;
+        if (weapon == null) return;
+
         if (projectilePrefab == null || attackSpawnPoint == null)
         {
             Debug.LogWarning("Missing projectile prefab or attack spawn point!");
@@ -423,7 +443,7 @@ public class PlayerController : MonoBehaviour
         var hb = proj.GetComponent<HurtBox>();
         hb.isProjectile = false; // stationary
         hb.direction = Vector3.zero;
-        hb.damage = weaponDamage;
+        hb.damage = weapon.damage;
         hb.speed = 0f;
         hb.lifetime = hurtBoxLifetime;
         hb.owner = gameObject;
@@ -467,16 +487,20 @@ public class PlayerController : MonoBehaviour
 
     private void RangedAttack()
     {
+        Weapon weapon = equippedItemInstance.baseItem as Weapon;
+        if (weapon == null) return;
+
         //animator.SetTrigger("RangedAttack");
         //Debug.Log("Fired a projectile.");
         // Implement projectile logic here
         // Deal 'weaponDamage' to enemy
         GameObject proj = Instantiate(projectilePrefab, attackSpawnPoint.position, attackSpawnPoint.rotation);
+
         var hb = proj.GetComponent<HurtBox>();
         hb.isProjectile = true;
         hb.direction = attackSpawnPoint.forward;
-        hb.damage = weaponDamage;
-        hb.speed = 15f;
+        hb.damage = weapon.damage;
+        hb.speed = weapon.projectileSpeed;
         hb.lifetime = 3f;
         hb.rb = proj.GetComponent<Rigidbody>();
 
