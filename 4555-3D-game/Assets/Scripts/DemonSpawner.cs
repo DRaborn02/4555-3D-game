@@ -14,7 +14,15 @@ public class DemonSpawner : MonoBehaviour
     [Header("Imp Settings")]
     public int impCount = 3;                // How many imps per wave
     public float impSpawnRadius = 5f;       // How far from the demon they spawn
+    
+    /* not used until wave complete is implemented */   
 
+    /*
+    [Header("Audio")]
+    [SerializeField] private AudioClip enemiesSpawnedSound;
+    [SerializeField] private AudioClip waveCompleteSound;
+    [SerializeField] private float soundVolume = 1f;
+    */
     private GameObject currentDemon;
     private readonly List<GameObject> currentImps = new List<GameObject>();
     private bool isSpawning;
@@ -32,6 +40,12 @@ public class DemonSpawner : MonoBehaviour
             bool allEnemiesGone = currentDemon == null && AllImpsGone();
             if (allEnemiesGone)
             {
+                /*
+                if (waveCompleteSound != null && AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySfx(waveCompleteSound, soundVolume);
+                }
+                */
                 StartCoroutine(RespawnAfterDelay());
             }
         }
@@ -62,6 +76,13 @@ public class DemonSpawner : MonoBehaviour
             GameObject imp = Instantiate(impPrefab, impPos, Quaternion.identity);
             currentImps.Add(imp);
         }
+        
+        /*// Play enemies spawned sound
+        if (enemiesSpawnedSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(enemiesSpawnedSound, soundVolume);
+        }
+        */
     }
 
     private IEnumerator RespawnAfterDelay()

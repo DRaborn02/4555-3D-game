@@ -35,6 +35,15 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float meleeRange = 1.5f;
     [SerializeField] private float hurtBoxLifetime = 0.2f;
+    [Space]
+    
+    [Header("Weapon Audio")]
+    [SerializeField] private AudioClip lightMeleeSwoosh; // Assign in Inspector from Assets/Audio/SFX/
+    [SerializeField] private AudioClip heavyMeleeSwoosh; // Assign in Inspector from Assets/Audio/SFX/
+    [SerializeField] private AudioClip rangedAttackSound; // Assign in Inspector from Assets/Audio/SFX/
+    [SerializeField] private AudioClip jumpSound; // Assign in Inspector from Assets/Audio/SFX/
+    [SerializeField] private AudioClip dashSound; // Assign in Inspector from Assets/Audio/SFX/
+    [SerializeField] private float weaponSoundVolume = 1f;
 
     private Vector2 moveInput;
     private Rigidbody rb;
@@ -71,7 +80,21 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         inventory = GetComponent<Inventory>();
-        upperBodyLayer = animator.GetLayerIndex("Upper Body");
+        
+        // Auto-assign animator if not assigned in Inspector
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+            if (animator == null)
+            {
+                Debug.LogError("PlayerController: No Animator component found! Please add an Animator component to the player GameObject.");
+            }
+        }
+        
+        if (animator != null)
+        {
+            upperBodyLayer = animator.GetLayerIndex("Upper Body");
+        }
     }
 
     void Start()
@@ -111,7 +134,16 @@ public class PlayerController : MonoBehaviour
         var playerInput = GetComponent<PlayerInput>();
         jumpInput = playerInput.actions["Jump"].ReadValue<float>();
         isGrounded = false;
-        animator.SetBool("Jumping", true);
+        if (animator != null)
+        {
+            animator.SetBool("Jumping", true);
+        }
+        
+        // Play jump sound
+        if (jumpSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(jumpSound, weaponSoundVolume);
+        }
     }
 
     public void OnDash()
@@ -128,7 +160,10 @@ public class PlayerController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         isGrounded = true;
-        animator.SetBool("Jumping", false);
+        if (animator != null)
+        {
+            animator.SetBool("Jumping", false);
+        }
     }
 
     void OnInteract()
@@ -225,13 +260,16 @@ public class PlayerController : MonoBehaviour
         Vector3 move = new Vector3(-moveInput.x, 0, -moveInput.y);
 
         // Animations
-        if (move == Vector3.zero)
+        if (animator != null)
         {
-            animator.SetBool("Moving", false);
-        }
-        else
-        {
-            animator.SetBool("Moving", true);
+            if (move == Vector3.zero)
+            {
+                animator.SetBool("Moving", false);
+            }
+            else
+            {
+                animator.SetBool("Moving", true);
+            }
         }
 
         if (move.sqrMagnitude > 0.01f)
@@ -353,6 +391,12 @@ public class PlayerController : MonoBehaviour
         canDash = false;
         isDashing = true;
 
+        // Play dash sound
+        if (dashSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(dashSound, weaponSoundVolume);
+        }
+
         // Use move input for dash direction
         Vector3 dashDirection = new Vector3(-moveInput.x, 0f, -moveInput.y);
 
@@ -382,9 +426,18 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        // Play weapon swoosh sound
+        if (lightMeleeSwoosh != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(lightMeleeSwoosh, weaponSoundVolume);
+        }
+
         // Trigger animation and layer blending
-        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f));
-        animator.SetTrigger("Attack");
+        if (animator != null)
+        {
+            StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f));
+            animator.SetTrigger("Attack");
+        }
 
         // Spawn at the attackSpawnPoint transform
         GameObject proj = Instantiate(
@@ -427,9 +480,19 @@ public class PlayerController : MonoBehaviour
     private void HeavyMeleeAttack()
     {
         //print("Heavy Melee Attack Executed");
-        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
-        animator.SetTrigger("Attack");
-        //animator.SetTrigger("HeavyMeleeAttack");
+        
+        // Play weapon swoosh sound
+        if (heavyMeleeSwoosh != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(heavyMeleeSwoosh, weaponSoundVolume);
+        }
+        
+        if (animator != null)
+        {
+            StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
+            animator.SetTrigger("Attack");
+            //animator.SetTrigger("HeavyMeleeAttack");
+        }
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, 2.5f);
         foreach (Collider enemy in hitEnemies)
         {
@@ -446,6 +509,13 @@ public class PlayerController : MonoBehaviour
     {
         //animator.SetTrigger("RangedAttack");
         //Debug.Log("Fired a projectile.");
+        
+        // Play ranged attack sound
+        if (rangedAttackSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(rangedAttackSound, weaponSoundVolume);
+        }
+        
         // Implement projectile logic here
         // Deal 'weaponDamage' to enemy
         GameObject proj = Instantiate(projectilePrefab, attackSpawnPoint.position, attackSpawnPoint.rotation);
@@ -457,8 +527,11 @@ public class PlayerController : MonoBehaviour
         hb.lifetime = 3f;
         hb.rb = proj.GetComponent<Rigidbody>();
 
-        StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
-        animator.SetTrigger("RangedAttack");
+        if (animator != null)
+        {
+            StartCoroutine(PulseLayerWeight(upperBodyLayer, 1f, 0.8f)); // fades in/out over 0.8 seconds total
+            animator.SetTrigger("RangedAttack");
+        }
 
     }
 
@@ -531,6 +604,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PulseLayerWeight(int layerIndex, float peakWeight, float totalDuration, float fadeFraction = 0.25f)
     {
+        if (animator == null) yield break;
+        
         // fadeFraction = fraction of time spent fading in/out (e.g., 0.25 = 25% fade-in, 50% hold, 25% fade-out)
         float fadeDuration = totalDuration * fadeFraction;
         float holdDuration = totalDuration - (fadeDuration * 2f);

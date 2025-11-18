@@ -21,6 +21,14 @@ public class FlyingEnemyController : MonoBehaviour
     [SerializeField] private float sightRange = 6f;
     [SerializeField] private float attackCooldown = 1.5f;
     [SerializeField] private float enemyHealth = 5f;
+    
+    [Header("Audio")]
+    [SerializeField] private AudioClip impSwingSound;
+    [SerializeField] private AudioClip impAmbientSound;
+    [SerializeField] private float soundVolume = 1f;
+    private AudioSource ambientAudioSource;
+    private float ambientCooldown = 5f;
+    private float lastAmbientTime = 0f;
 
     private Transform targetPlayer;
     private Transform orbitTarget; // usually a demon
@@ -40,6 +48,16 @@ public class FlyingEnemyController : MonoBehaviour
 
         if (hurtbox != null) hurtbox.SetActive(false);
         ApplyData();
+        
+        // Set up ambient sound if available
+        if (impAmbientSound != null)
+        {
+            ambientAudioSource = gameObject.AddComponent<AudioSource>();
+            ambientAudioSource.clip = impAmbientSound;
+            ambientAudioSource.loop = false;
+            ambientAudioSource.volume = soundVolume * 0.3f; // Ambient sounds typically quieter
+            ambientAudioSource.spatialBlend = 1f; // 3D sound
+        }
 
         FindNearestPlayer();
         currentState = State.Searching;
@@ -104,6 +122,17 @@ public class FlyingEnemyController : MonoBehaviour
                         currentState = State.Chasing;
                     else if (orbitTarget == null)
                         currentState = State.Searching;
+                    
+                    // Play ambient sound occasionally while hovering
+                    if (ambientAudioSource != null && !ambientAudioSource.isPlaying)
+                    {
+                        if (Time.time - lastAmbientTime >= ambientCooldown)
+                        {
+                            ambientAudioSource.Play();
+                            lastAmbientTime = Time.time;
+                            ambientCooldown = Random.Range(4f, 8f);
+                        }
+                    }
                     break;
 
                 case State.Chasing:
@@ -215,6 +244,12 @@ public class FlyingEnemyController : MonoBehaviour
     {
         canAttack = false;
         animator.SetTrigger("Attack");
+        
+        // Play imp swing sound
+        if (impSwingSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(impSwingSound, soundVolume);
+        }
 
         yield return new WaitForSeconds(0.4f);
         if (enemyHealthScript != null && enemyHealthScript.IsInvulnerable)
@@ -246,7 +281,7 @@ public class FlyingEnemyController : MonoBehaviour
         // Cast straight down to find the ground
         if (Physics.Raycast(transform.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f, groundMask))
         {
-            // Clamp position so it doesn’t rise higher than flightHeight above the ground
+            // Clamp position so it doesnï¿½t rise higher than flightHeight above the ground
             float desiredY = hit.point.y + flightHeight;
             Vector3 pos = transform.position;
             pos.y = Mathf.Min(pos.y, desiredY);

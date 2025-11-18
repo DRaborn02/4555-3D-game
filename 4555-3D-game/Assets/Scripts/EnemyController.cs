@@ -42,6 +42,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 5f;
     [Header("Data")]
     [SerializeField] private EnemyData enemyData;
+    
+    [Header("Audio")]
+    [SerializeField] private AudioClip demonSwingSound;
+    [SerializeField] private AudioClip demonAmbientSound;
+    [SerializeField] private float soundVolume = 1f;
+    private AudioSource ambientAudioSource;
+    private float ambientCooldown = 5f; // How often to play ambient sound
+    private float lastAmbientTime = 0f;
 
     void Awake()
     {
@@ -113,6 +121,16 @@ public class EnemyController : MonoBehaviour
             if (navAgent != null) navAgent.speed = enemyData.navSpeed;
             controller = enemyData.animatorController ?? controller;
         }
+        
+        // Set up ambient sound if available
+        if (demonAmbientSound != null)
+        {
+            ambientAudioSource = gameObject.AddComponent<AudioSource>();
+            ambientAudioSource.clip = demonAmbientSound;
+            ambientAudioSource.loop = false;
+            ambientAudioSource.volume = soundVolume * 0.3f; // Ambient sounds typically quieter
+            ambientAudioSource.spatialBlend = 1f; // 3D sound
+        }
 
         navAgent = GetComponent<NavMeshAgent>();
 
@@ -168,6 +186,17 @@ public class EnemyController : MonoBehaviour
                 currentState = State.Patrolling;
                 //Debug.Log("Player not in attack or sight range. Patrolling.");
                 Patrolling();
+            }
+        }
+        
+        // Play ambient sound occasionally while patrolling
+        if (currentState == State.Patrolling && ambientAudioSource != null && !ambientAudioSource.isPlaying)
+        {
+            if (Time.time - lastAmbientTime >= ambientCooldown)
+            {
+                ambientAudioSource.Play();
+                lastAmbientTime = Time.time;
+                ambientCooldown = Random.Range(4f, 8f); // Randomize next ambient sound
             }
         }
 
@@ -294,6 +323,12 @@ public class EnemyController : MonoBehaviour
     {
         canAttack = false; // lock out new attacks
         animator.SetBool("Attack", true); // start attack animation
+
+        // Play demon swing sound
+        if (demonSwingSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfx(demonSwingSound, soundVolume);
+        }
 
         // Wait until the middle of the animation (the "hit" moment)
         yield return new WaitForSeconds(0.4f); // e.g. 0.4f seconds
