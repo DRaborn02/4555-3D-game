@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: d329e2a345c52f6499e0362a4fc2a267, type: 2}
+  currentDurability: 8
 --- !u!114 &8143739510761493902
 MonoBehaviour:
   m_ObjectHideFlags: 0

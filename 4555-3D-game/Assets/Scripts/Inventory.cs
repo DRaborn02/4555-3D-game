@@ -84,21 +84,27 @@ public class Inventory : MonoBehaviour
 
 
 
-    public bool AddItem(Item item)
+    public bool AddItem(Item item, int durability)
     {
-        
 
-        ItemInstance instance = new ItemInstance(item);  // ← NEW
 
-        if (item is Equipment)
-        {
-            if (equipmentSlot != null)
-                DropItem(equipmentSlot.baseItem);
+        ItemInstance instance;
 
-            equipmentSlot = instance;
-            RefreshUI();
-            return true;
-        }
+        if (durability >= 0)
+            instance = new ItemInstance(item, durability);   // restore durability
+        else
+            instance = new ItemInstance(item);               // new full-durability item
+
+
+        //if (item is Equipment)
+        //{
+        //    if (equipmentSlot != null)
+        //        DropItem(equipmentSlot.baseItem);
+
+        //    equipmentSlot = instance;
+        //    RefreshUI();
+        //    return true;
+        //}
 
         // Find first empty slot
         for (int i = 1; i < slots.Length; i++)
@@ -106,8 +112,9 @@ public class Inventory : MonoBehaviour
             if (slots[i] == null)
             {
                 slots[i] = instance;   // ← store instance, not item
-                RefreshUI();
+                
                 equipItem();
+                RefreshUI();
                 return true;
             }
         }
@@ -115,10 +122,10 @@ public class Inventory : MonoBehaviour
         // Inventory full → drop and replace
         int itemToReplace = currentIndex;
         if (currentIndex == 0) { itemToReplace++; }
-        DropItem(slots[itemToReplace].baseItem);
+        DropItem(slots[itemToReplace]);
         slots[itemToReplace] = instance;
-        RefreshUI();
         equipItem();
+        RefreshUI();
         return true;
     }
 
@@ -143,26 +150,17 @@ public class Inventory : MonoBehaviour
     }
 
 
-    public void DropItem(Item item)
+    public void DropItem(ItemInstance instance)
     {
-        if (item == null) return;
+        if (instance == null) return;
 
-        // Prevent dropping item in slot 0
-        //if (slots[0] != null && slots[0].baseItem == item)
-        //{
-        //    Debug.Log("Cannot drop starting weapon.");
-        //    return;
-        //}
+        GameObject drop = Instantiate(instance.baseItem.prefab, transform.position + transform.forward, Quaternion.identity);
+        Pickup p = drop.GetComponent<Pickup>();
 
-        if (item.prefab != null)
-        {
-            // Spawn the pickup at player's feet
-            Vector3 dropPosition = transform.position + transform.forward;
-            Instantiate(item.prefab, dropPosition, Quaternion.identity);
-        }
-
-        //Debug.Log("Dropped " + item.itemName);
+        if (p != null)
+            p.setDurability(instance.durability);
     }
+
 
     public void RefreshUI()
     {
