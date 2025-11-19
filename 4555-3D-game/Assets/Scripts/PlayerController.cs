@@ -190,8 +190,9 @@ public class PlayerController : MonoBehaviour
             if (pickup != null)
             {
                 Inventory inventory = GetComponent<Inventory>();
-                if (inventory != null && inventory.AddItem(pickup.GetItem()))
+                if (inventory != null && inventory.AddItem(pickup.GetItem(), pickup.getDurability()))
                 {
+
                     pickup.Consume();
                 }
                 break; // stop after first pickup

@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private AudioClip weaponSwapSound;
     [SerializeField] private float soundVolume = 1f;
 
-    [SerializeField] private int defaultSlotCount = 3;
+    [SerializeField] private int defaultSlotCount = 4;
     private ItemInstance[] slots;
     private ItemInstance equipmentSlot;
     private int currentIndex = 0;
@@ -27,11 +27,30 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Color defaultColor = Color.white;
     [SerializeField] private Color selectedColor = Color.yellow;
 
+    [SerializeField] private Item defaultStartingItem;
+
+
     void Awake()
     {
         slots = new ItemInstance[defaultSlotCount];
         //handTransform = transform.Find("Hand"); // Default to a child named "Hand"
+
+        // Give the player the starting item (slot 0)
+        if (defaultStartingItem != null)
+        {
+            slots[0] = new ItemInstance(defaultStartingItem);
+        }
     }
+    void Start()
+    {
+        RefreshUI();
+
+        if (slots[0] != null)
+        {
+            equipItem();
+        }
+    }
+
 
     public void BindUI(GameObject uiRoot)
     {
@@ -65,37 +84,48 @@ public class Inventory : MonoBehaviour
 
 
 
-    public bool AddItem(Item item)
+    public bool AddItem(Item item, int durability)
     {
-        ItemInstance instance = new ItemInstance(item);  // ← NEW
 
-        if (item is Equipment)
-        {
-            if (equipmentSlot != null)
-                DropItem(equipmentSlot.baseItem);
 
-            equipmentSlot = instance;
-            RefreshUI();
-            return true;
-        }
+        ItemInstance instance;
+
+        if (durability >= 0)
+            instance = new ItemInstance(item, durability);   // restore durability
+        else
+            instance = new ItemInstance(item);               // new full-durability item
+
+
+        //if (item is Equipment)
+        //{
+        //    if (equipmentSlot != null)
+        //        DropItem(equipmentSlot.baseItem);
+
+        //    equipmentSlot = instance;
+        //    RefreshUI();
+        //    return true;
+        //}
 
         // Find first empty slot
-        for (int i = 0; i < slots.Length; i++)
+        for (int i = 1; i < slots.Length; i++)
         {
             if (slots[i] == null)
             {
                 slots[i] = instance;   // ← store instance, not item
-                RefreshUI();
+                
                 equipItem();
+                RefreshUI();
                 return true;
             }
         }
 
         // Inventory full → drop and replace
-        DropItem(slots[currentIndex].baseItem);
-        slots[currentIndex] = instance;
-        RefreshUI();
+        int itemToReplace = currentIndex;
+        if (currentIndex == 0) { itemToReplace++; }
+        DropItem(slots[itemToReplace]);
+        slots[itemToReplace] = instance;
         equipItem();
+        RefreshUI();
         return true;
     }
 
@@ -120,19 +150,17 @@ public class Inventory : MonoBehaviour
     }
 
 
-    public void DropItem(Item item)
+    public void DropItem(ItemInstance instance)
     {
-        if (item == null) return;
+        if (instance == null) return;
 
-        if (item.prefab != null)
-        {
-            // Spawn the pickup at player's feet
-            Vector3 dropPosition = transform.position + transform.forward;
-            Instantiate(item.prefab, dropPosition, Quaternion.identity);
-        }
+        GameObject drop = Instantiate(instance.baseItem.prefab, transform.position + transform.forward, Quaternion.identity);
+        Pickup p = drop.GetComponent<Pickup>();
 
-        //Debug.Log("Dropped " + item.itemName);
+        if (p != null)
+            p.setDurability(instance.durability);
     }
+
 
     public void RefreshUI()
     {
@@ -164,6 +192,14 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < slots.Length; i++)
         {
             ItemInstance instance = slots[i];
+
+            // Slot 0: NEVER show durability, even for weapons
+            if (i == 0)
+            {
+                if (durabilityBGs[i] != null) durabilityBGs[i].enabled = false;
+                if (durabilityFills[i] != null) durabilityFills[i].enabled = false;
+                continue;
+            }
 
             // No item in slot
             if (instance == null || !(instance.baseItem is Weapon weapon))

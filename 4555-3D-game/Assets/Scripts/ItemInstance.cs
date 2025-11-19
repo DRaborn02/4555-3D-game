@@ -17,6 +17,10 @@ public class ItemInstance
     {
         durability = Mathf.Max(0, durability - amount);
     }
-
+    public ItemInstance(Item item, int customDurability)
+    {
+        baseItem = item;
+        this.durability = customDurability;
+    }
     public bool IsBroken => durability <= 0;
 }

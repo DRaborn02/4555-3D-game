@@ -248,7 +248,16 @@ MonoBehaviour:
   attackSpawnPoint: {fileID: 8851944162800810459}
   meleeRange: 3
   hurtBoxLifetime: 0.5
+  lightMeleeSwoosh: {fileID: 0}
+  heavyMeleeSwoosh: {fileID: 0}
+  rangedAttackSound: {fileID: 0}
+  jumpSound: {fileID: 0}
+  dashSound: {fileID: 0}
+  weaponSoundVolume: 1
   item: {fileID: 0}
+  equippedItemInstance:
+    baseItem: {fileID: 0}
+    durability: 0
   mainCamera: {fileID: 0}
   groundMask:
     serializedVersion: 2
@@ -265,10 +274,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872b67edf6c2dd44ebea65f9f23ac8fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultSlotCount: 3
+  weaponSwapSound: {fileID: 0}
+  soundVolume: 1
+  defaultSlotCount: 4
   handTransform: {fileID: 5608159220723663527}
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0.08225429, g: 0.015686274, b: 1, a: 1}
+  defaultStartingItem: {fileID: 11400000, guid: f2f48d8fe9143e248801621b9510033a, type: 2}
 --- !u!114 &4973831175569075189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +293,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4abf97dc2cfd0bf44b9041564c1eda46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerHurtSound: {fileID: 0}
+  playerHealSound: {fileID: 0}
+  soundVolume: 1
 --- !u!1001 &3740655526242481381
 PrefabInstance:
   m_ObjectHideFlags: 0
