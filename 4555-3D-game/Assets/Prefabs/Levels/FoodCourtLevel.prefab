@@ -4786,6 +4786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: b0bae83ba43d7c34a8c627d42727674c, type: 2}
+  currentDurability: -1
 --- !u!1 &2400179615214432797
 GameObject:
   m_ObjectHideFlags: 0
@@ -8357,6 +8358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: b088626e245f85a41a8367124f7b7b4f, type: 2}
+  currentDurability: -1
 --- !u!114 &7178398160110561062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8493,6 +8495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: d329e2a345c52f6499e0362a4fc2a267, type: 2}
+  currentDurability: -1
 --- !u!114 &7099026421513510981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10563,6 +10566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: b0bae83ba43d7c34a8c627d42727674c, type: 2}
+  currentDurability: -1
 --- !u!1 &6689069902267511073
 GameObject:
   m_ObjectHideFlags: 0
@@ -11971,8 +11975,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NotificationBehavior: 0
   m_MaxPlayerCount: 2
-  m_AllowJoining: 1
-  m_JoinBehavior: 0
+  m_AllowJoining: 0
+  m_JoinBehavior: 2
   m_PlayerJoinedEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -11982,7 +11986,7 @@ MonoBehaviour:
   m_JoinAction:
     m_UseReference: 0
     m_Action:
-      m_Name: 
+      m_Name: Join
       m_Type: 0
       m_ExpectedControlType: 
       m_Id: d72a3ad3-3f3a-4cae-a6da-cc0540574472
