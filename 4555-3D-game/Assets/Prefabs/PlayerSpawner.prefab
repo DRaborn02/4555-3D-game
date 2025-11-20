@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7194468369992010805}
   - component: {fileID: 3336970688890854268}
+  - component: {fileID: 6967263898945300196}
   m_Layer: 0
   m_Name: PlayerSpawner
   m_TagString: Untagged
@@ -76,3 +77,17 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &6967263898945300196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6099535457258760605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d7bcbeda740eae49aa5c864aec54c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deviceData: {fileID: 0}
+  inputManager: {fileID: 3336970688890854268}

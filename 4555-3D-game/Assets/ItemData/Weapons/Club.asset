@@ -25,5 +25,5 @@ MonoBehaviour:
   projectileSpeed: 0
   attackRange: 7
   projectilePrefab: {fileID: 9035958555467244163, guid: ccd2b476e55bee04a8a0b838ffbba5a3, type: 3}
-  maxDurability: 10
-  currentDurability: 10
+  maxDurability: 8
+  currentDurability: 8
