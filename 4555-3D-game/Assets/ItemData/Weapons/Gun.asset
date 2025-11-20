@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Gun
   m_EditorClassIdentifier: 
   itemName: Gun
-  icon: {fileID: 21300000, guid: a872f21481bc2c94081cf17b3b113adc, type: 3}
+  icon: {fileID: 21300000, guid: 453ec3f67cc6e864baf0f12f9454540e, type: 3}
   prefab: {fileID: 6225125735990664276, guid: b1d609d236bcd2244828443261edb3b0, type: 3}
   heldPrefab: {fileID: 828588549114097526, guid: 54d849a55c1ba0d4f8606eed1f9c57ae, type: 3}
   type: 2
-  damage: 2
+  damage: 3
   secondaryDamage: 0
   swingSpeed: 0
   cooldown: 0.5

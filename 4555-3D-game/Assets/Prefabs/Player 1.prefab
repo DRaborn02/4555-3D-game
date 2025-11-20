@@ -237,9 +237,9 @@ MonoBehaviour:
   moveSpeed: 8
   rotationSpeed: 10
   interactRange: 2
-  jumpHeight: 5
+  jumpHeight: 7
   jumpCooldown: 1
-  dashSpeed: 10
+  dashSpeed: 15
   dashDuration: 0.25
   dashCooldown: 2
   movementDeadzone: 0.2
@@ -249,11 +249,11 @@ MonoBehaviour:
   attackSpawnPoint: {fileID: 8851944162800810459}
   meleeRange: 3
   hurtBoxLifetime: 0.5
-  lightMeleeSwoosh: {fileID: 0}
-  heavyMeleeSwoosh: {fileID: 0}
-  rangedAttackSound: {fileID: 0}
+  lightMeleeSwoosh: {fileID: 8300000, guid: f611a4fab7bb94a34a6552e121c01b43, type: 3}
+  heavyMeleeSwoosh: {fileID: 8300000, guid: be688f7182ef940e1abad7702aafb52e, type: 3}
+  rangedAttackSound: {fileID: 8300000, guid: 5108058e5452542b9a5afaa1c956ab2d, type: 3}
   jumpSound: {fileID: 0}
-  dashSound: {fileID: 0}
+  dashSound: {fileID: 8300000, guid: 0fffc9ad4a3914a6593c4e7dd7efcdc8, type: 3}
   weaponSoundVolume: 1
   item: {fileID: 0}
   equippedItemInstance:
@@ -295,8 +295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4abf97dc2cfd0bf44b9041564c1eda46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHurtSound: {fileID: 0}
-  playerHealSound: {fileID: 0}
+  playerHurtSound: {fileID: 8300000, guid: d49285af3aa9146a3854c80852675a88, type: 3}
+  playerHealSound: {fileID: 8300000, guid: 5a68c43bde4764d23a2cc47e3b33e60c, type: 3}
   soundVolume: 1
 --- !u!1001 &3740655526242481381
 PrefabInstance:
