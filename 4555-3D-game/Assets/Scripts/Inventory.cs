@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 
@@ -29,6 +30,8 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] private Item defaultStartingItem;
 
+    [SerializeField] private bool isMirrored = false;
+
 
     void Awake()
     {
@@ -39,6 +42,14 @@ public class Inventory : MonoBehaviour
         if (defaultStartingItem != null)
         {
             slots[0] = new ItemInstance(defaultStartingItem);
+        }
+
+        // Auto-detect player index and mirror Player 2
+        PlayerInput input = GetComponent<PlayerInput>();
+        if (input != null)
+        {
+            isMirrored = (input.playerIndex == 1);
+            // Player with index 1 = Player 2 → mirrored
         }
     }
     void Start()
@@ -231,8 +242,29 @@ public class Inventory : MonoBehaviour
             //Debug.Log("Inventory is empty.");
             return;
         }
-
         int startIndex = currentIndex;
+
+        if (isMirrored)
+        {
+            // Mirrored behaves like Previous
+            do
+            {
+                currentIndex = (currentIndex - 1 + slots.Length) % slots.Length;
+            }
+            while (slots[currentIndex] == null && currentIndex != startIndex);
+
+            RefreshUI();
+            //Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+            if (slots[currentIndex] != null)
+            {
+                //print("We have an item in the current slot, equipping it");
+                PlayWeaponSwapSound();
+                equipItem();
+            }
+            return;
+        }
+
+        
         do
         {
             currentIndex = (currentIndex + 1) % slots.Length;
@@ -258,6 +290,28 @@ public class Inventory : MonoBehaviour
         }
 
         int startIndex = currentIndex;
+
+        if (isMirrored)
+        {
+            // Mirrored behaves like Next
+            do
+            {
+                currentIndex = (currentIndex + 1) % slots.Length;
+            }
+            while (slots[currentIndex] == null && currentIndex != startIndex);
+
+            RefreshUI();
+            //Debug.Log($"Switched to slot {currentIndex} containing {(slots[currentIndex] != null ? slots[currentIndex].itemName : "nothing")}");
+            if (slots[currentIndex] != null)
+            {
+                //print("We have an item in the current slot, equipping it");
+                PlayWeaponSwapSound();
+                equipItem();
+            }
+            return;
+        }
+
+        
         do
         {
             currentIndex = (currentIndex - 1 + slots.Length) % slots.Length;

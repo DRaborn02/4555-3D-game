@@ -105,53 +105,71 @@ public class PlayerUIManager : MonoBehaviour
 
     public void UpdateHealthUI(PlayerHealth playerHealth, int playerIndex)
     {
-        GameObject uiRoot = null;
-        if (playerIndex == 0) // P1
-        {
-            uiRoot = p1UI;
-        }
-        else if (playerIndex == 1) // P2
-        {
-            uiRoot = p2UI;
-        }
+        GameObject uiRoot = (playerIndex == 0) ? p1UI :
+                            (playerIndex == 1) ? p2UI : null;
+
         if (uiRoot == null) return;
-        
+
+        // --- Get the heart images for THIS UI root ---
+        Transform heartsPanel = uiRoot.transform.Find("MainPanel/HeartsPanel");
+        if (heartsPanel == null)
+        {
+            Debug.LogError("HeartsPanel not found in " + uiRoot.name);
+            return;
+        }
+
+        // Gather all heart images inside this panel
+        Image[] heartsLocal = heartsPanel.GetComponentsInChildren<Image>(includeInactive: true);
+
+        // Safety: ensure naming matches Heart0, Heart1, etc.
+        // Sort by name so Heart0 -> index 0, Heart1 -> index 1, etc.
+        System.Array.Sort(heartsLocal, (a, b) => a.name.CompareTo(b.name));
+
         int maxHP = playerHealth.getMaxHealth();
         int currentHP = playerHealth.getCurrentHealth();
-        // maxHeartIndex is equal to the maxHP divided by 4, rounded up (minus 1 for 0 index)
-        // HeartsPanel should have a child called Heart0 - Heart"maxHeartIndex"
         int maxHeartIndex = (maxHP / 4) + (maxHP % 4 != 0 ? 1 : 0) - 1;
 
-        // print("Updating health UI for player " + playerIndex + ": " + currentHP + "/" + maxHP + " (" + (maxHeartIndex+1) + " hearts)");
-
         int hpToFill = currentHP;
+
         for (int i = 0; i <= maxHeartIndex; i++)
         {
-           if (hpToFill >= 4)
-           {
-               hearts[i].sprite = fullHeart;
-               hpToFill -= 4;
-           }
-           else if (hpToFill == 3)
-           {
-               hearts[i].sprite = threeQuartersHeart;
-               hpToFill -= 3;
-           }
-           else if (hpToFill == 2)
-           {
-               hearts[i].sprite = halfHeart;
-               hpToFill -= 2;
-           }
-           else if (hpToFill == 1)
-           {
-               hearts[i].sprite = quarterHeart;
-               hpToFill -= 1;
-           }
-           else
-           {
-               hearts[i].sprite = emptyHeart;
+            if (hpToFill >= 4)
+            {
+                heartsLocal[i].sprite = fullHeart;
+                hpToFill -= 4;
+            }
+            else if (hpToFill == 3)
+            {
+                heartsLocal[i].sprite = threeQuartersHeart;
+                hpToFill -= 3;
+            }
+            else if (hpToFill == 2)
+            {
+                heartsLocal[i].sprite = halfHeart;
+                hpToFill -= 2;
+            }
+            else if (hpToFill == 1)
+            {
+                heartsLocal[i].sprite = quarterHeart;
+                hpToFill -= 1;
+            }
+            else
+            {
+                heartsLocal[i].sprite = emptyHeart;
             }
         }
 
+        // Flip hearts only for Player 2
+        bool mirror = (playerIndex == 1);
+
+        for (int i = 0; i <= maxHeartIndex; i++)
+        {
+            RectTransform rt = heartsLocal[i].rectTransform;
+
+            rt.localScale = mirror
+                ? new Vector3(-1, 1, 1)
+                : new Vector3(1, 1, 1);
+        }
     }
+
 }

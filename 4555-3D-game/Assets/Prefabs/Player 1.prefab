@@ -242,6 +242,7 @@ MonoBehaviour:
   dashSpeed: 10
   dashDuration: 0.25
   dashCooldown: 2
+  movementDeadzone: 0.2
   npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   maxQuarterHearts: 12
   hurtBoxPrefab: {fileID: 8836447578986973661, guid: 464f4b1d14e1f7e4db82192b2eb080b6, type: 3}
@@ -281,6 +282,7 @@ MonoBehaviour:
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0.08225429, g: 0.015686274, b: 1, a: 1}
   defaultStartingItem: {fileID: 11400000, guid: f2f48d8fe9143e248801621b9510033a, type: 2}
+  isMirrored: 0
 --- !u!114 &4973831175569075189
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,12 +18,6 @@ public class DeviceAssignmentManager : MonoBehaviour
 
     void Update()
     {
-        // Handle Keyboard+Mouse as one device
-        if (!keyboardMouseAssigned && KeyboardMouseWasUsedThisFrame())
-        {
-            AssignKeyboardMouse();
-        }
-
         // Handle other devices (gamepads, joysticks, etc.)
         foreach (var device in InputSystem.devices)
         {
@@ -36,6 +30,14 @@ public class DeviceAssignmentManager : MonoBehaviour
                 break;
             }
         }
+
+        // Handle Keyboard+Mouse as one device
+        if (!keyboardMouseAssigned && KeyboardMouseWasUsedThisFrame())
+        {
+            AssignKeyboardMouse();
+        }
+
+        
     }
 
     private void AssignKeyboardMouse()

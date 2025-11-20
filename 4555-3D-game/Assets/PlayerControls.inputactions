@@ -215,7 +215,7 @@
                 {
                     "name": "",
                     "id": "a16f1a80-8173-4fd2-8eef-4709aae2d245",
-                    "path": "<Gamepad>/rightShoulder",
+                    "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
@@ -247,6 +247,17 @@
                 },
                 {
                     "name": "",
+                    "id": "4d2abb68-5e5c-4d9c-bf71-df9e99ddba02",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "NextSlot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "972a92c3-c673-44b9-8ea5-07bc4cf62907",
                     "path": "<Keyboard>/q",
                     "interactions": "",
@@ -260,6 +271,17 @@
                     "name": "",
                     "id": "ff7a1de7-3a78-4fa1-8f4e-ea9d6b23b6e4",
                     "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Controller",
+                    "action": "PreviousSlot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f3d78a8-6387-4197-baf2-f68d092dd2cd",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Controller",
