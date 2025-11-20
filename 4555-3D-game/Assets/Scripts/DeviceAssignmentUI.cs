@@ -22,7 +22,6 @@ public class DeviceAssignmentUI : MonoBehaviour
     [Header("Player 2 UI")]
     public GameObject player2Panel;
     public TextMeshProUGUI player2DeviceText;
-    public Button player2DisconnectButton;
     public GameObject player2ReadyIndicator;
 
     [Header("Buttons")]
@@ -41,12 +40,6 @@ public class DeviceAssignmentUI : MonoBehaviour
         player1DisconnectButton.onClick.AddListener(() =>
         {
             deviceManager.UnassignDevice(0);
-            RefreshUI();
-        });
-
-        player2DisconnectButton.onClick.AddListener(() =>
-        {
-            deviceManager.UnassignDevice(1);
             RefreshUI();
         });
 
@@ -124,20 +117,17 @@ public class DeviceAssignmentUI : MonoBehaviour
                 if (dev != null)
                 {
                     player2DeviceText.text = dev.displayName;
-                    player2DisconnectButton.interactable = true;
                     player2ReadyIndicator.SetActive(true);
                 }
                 else
                 {
                     player2DeviceText.text = "Waiting…";
-                    player2DisconnectButton.interactable = false;
                     player2ReadyIndicator.SetActive(false);
                 }
             }
             else
             {
                 player2DeviceText.text = "Waiting…";
-                player2DisconnectButton.interactable = false;
                 player2ReadyIndicator.SetActive(false);
             }
         }
