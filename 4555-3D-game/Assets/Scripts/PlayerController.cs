@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashSpeed = 10.0f;
     [SerializeField] float dashDuration = 0.2f;
     [SerializeField] float dashCooldown = 2.0f;
+    [SerializeField] private float movementDeadzone = 0.05f;
     [Space]
 
     [Header("NPC Settings")]
@@ -79,6 +80,8 @@ public class PlayerController : MonoBehaviour
 
     private int upperBodyLayer;
     private bool isGrounded = true;
+
+    private PlayerInput playerInput;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -98,6 +101,8 @@ public class PlayerController : MonoBehaviour
         {
             upperBodyLayer = animator.GetLayerIndex("Upper Body");
         }
+
+        playerInput = GetComponent<PlayerInput>();
     }
 
     void Start()
@@ -267,6 +272,10 @@ public class PlayerController : MonoBehaviour
         // WASD always maps directly to world axes (XZ plane)
         Vector3 move = new Vector3(-moveInput.x, 0, -moveInput.y);
 
+        // Apply deadzone to controller drift
+        if (move.magnitude < movementDeadzone)
+            move = Vector3.zero;
+
         // Animations
         if (animator != null)
         {
@@ -320,8 +329,11 @@ public class PlayerController : MonoBehaviour
             if (weapon != null && canAttack)
             {
 
-                // Attack like normal...
-                RotateTowardsMouse();
+                // Only rotate toward mouse if using Keyboard+Mouse
+                if (playerInput.currentControlScheme == "Keyboard")
+                {
+                    RotateTowardsMouse();
+                }
 
                 if (weapon.type == Weapon.WeaponType.LightMelee)
                 {
