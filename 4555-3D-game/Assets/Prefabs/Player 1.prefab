@@ -237,11 +237,11 @@ MonoBehaviour:
   moveSpeed: 8
   rotationSpeed: 10
   interactRange: 2
-  jumpHeight: 7
+  jumpHeight: 6
   jumpCooldown: 1
-  dashSpeed: 15
+  dashSpeed: 12
   dashDuration: 0.25
-  dashCooldown: 2
+  dashCooldown: 6
   movementDeadzone: 0.2
   npcHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   maxQuarterHearts: 12
@@ -298,6 +298,8 @@ MonoBehaviour:
   playerHurtSound: {fileID: 8300000, guid: d49285af3aa9146a3854c80852675a88, type: 3}
   playerHealSound: {fileID: 8300000, guid: 5a68c43bde4764d23a2cc47e3b33e60c, type: 3}
   soundVolume: 1
+  invulnDuration: 1
+  flashInterval: 0.1
 --- !u!1001 &3740655526242481381
 PrefabInstance:
   m_ObjectHideFlags: 0
