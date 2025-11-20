@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Progress;
 using System.Collections;
 using Unity.VisualScripting;
 

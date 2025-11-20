@@ -63,10 +63,15 @@ public class DeviceAssignmentManager : MonoBehaviour
         {
             foreach (var key in kb.allKeys)
             {
+                if (key == null)
+                    continue;
+
+                // key.wasPressedThisFrame can throw NRE in WebGL if key is "synced but uninitialized"
                 if (key.wasPressedThisFrame)
                     return true;
             }
         }
+
 
         if (mouse != null)
         {
