@@ -12,6 +12,7 @@ public class EnemyController : MonoBehaviour
     public RuntimeAnimatorController controller; // assign in inspector or load at runtime
     public Animator animator;
     public Transform targetPlayer;
+    private Transform[] playerTargets;
     public PlayerHealth playerHealth;
 
     private Vector3 walkPoint;
@@ -59,8 +60,22 @@ public class EnemyController : MonoBehaviour
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         // find player once (or assign from a manager)
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null) targetPlayer = playerObj.transform;
+        playerTargets = FindPlayers();
+        if (playerTargets == null || playerTargets.Length == 0)
+        {
+            playerTargets = FindPlayers();
+        }
+
+        if (playerTargets.Length > 0)
+            targetPlayer = GetClosestPlayer(playerTargets);
+        else
+            targetPlayer = null;
+
+
+        // If we have at least one valid player:
+        targetPlayer = GetClosestPlayer(playerTargets);
+
+
 
         // ensure agent settings are set per-instance
         if (navAgent != null)
@@ -70,6 +85,43 @@ public class EnemyController : MonoBehaviour
             navAgent.speed = Mathf.Max(navAgent.speed, 2f);
         }
     }
+
+    private Transform[] FindPlayers()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        List<Transform> validPlayers = new List<Transform>();
+
+        foreach (var p in players)
+        {
+            PlayerHealth ph = p.GetComponent<PlayerHealth>();
+
+            // Skip players who are dead OR missing PlayerHealth
+            if (ph != null && ph.getCurrentHealth() > 0)
+                validPlayers.Add(p.transform);
+        }
+
+        return validPlayers.ToArray();
+    }
+
+
+    private Transform GetClosestPlayer(Transform[] players)
+    {
+        Transform closest = null;
+        float minDist = Mathf.Infinity;
+        Vector3 pos = transform.position;
+
+        foreach (var p in players)
+        {
+            float dist = Vector3.Distance(pos, p.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = p;
+            }
+        }
+        return closest;
+    }
+
 
     void OnEnable()
     {
@@ -148,6 +200,32 @@ public class EnemyController : MonoBehaviour
     }
     void Update()
     {
+        // Always repopulate player list
+        playerTargets = FindPlayers();
+
+        // If no players left, idle / patrol safely
+        if (playerTargets.Length == 0)
+        {
+            targetPlayer = null;
+            currentState = State.Patrolling;
+            Patrolling();
+            return;
+        }
+
+        // ALWAYS pick a valid closest player
+        targetPlayer = GetClosestPlayer(playerTargets);
+
+        if (targetPlayer == null)
+            return; // <- prevents broken logic frame
+
+
+        if (playerTargets == null || playerTargets.Length == 0)
+            playerTargets = FindPlayers();
+
+        if (playerTargets.Length > 0)
+            targetPlayer = GetClosestPlayer(playerTargets);
+
+
         if (currentState != State.WaitingForPlayer)
         {           
             playerInSightRange = false; playerInAttackRange = false;

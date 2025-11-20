@@ -87,22 +87,34 @@ public class EnemyHealth : MonoBehaviour
         {
             for (int i = 0; i < renderers.Length; i++)
             {
-                renderers[i].material.color = (renderers[i].material.color == originalColors[i])
-                                              ? Color.red
-                                              : originalColors[i];
+                Material mat = renderers[i].material;
+
+                // Toggle between flash white and original
+                Color newColor = (mat.color == originalColors[i]) ? Color.white : originalColors[i];
+
+                // Use correct shader property
+                if (mat.HasProperty("_BaseColor"))
+                    mat.SetColor("_BaseColor", newColor);
+                else if (mat.HasProperty("_Color"))
+                    mat.SetColor("_Color", newColor);
             }
 
             yield return new WaitForSeconds(flashInterval);
             elapsed += flashInterval;
         }
 
+        // Reset colors
         for (int i = 0; i < renderers.Length; i++)
         {
-            renderers[i].material.color = originalColors[i];
+            if (renderers[i].material.HasProperty("_BaseColor"))
+                renderers[i].material.SetColor("_BaseColor", originalColors[i]);
+            else if (renderers[i].material.HasProperty("_Color"))
+                renderers[i].material.SetColor("_Color", originalColors[i]);
         }
 
         isInvulnerable = false;
     }
+
 
     private void Die()
     {
