@@ -86,7 +86,7 @@ public class DeviceAssignmentManager : MonoBehaviour
         foreach (var control in device.allControls)
         {
             if (control is ButtonControl button && button.wasPressedThisFrame) return true;
-            if (control is StickControl stick && stick.ReadValue().sqrMagnitude > 0.2f) return true;
+            if (control is StickControl stick && stick.ReadValue().sqrMagnitude > .2f) return true;
             if (control is DpadControl dpad &&
                 (dpad.up.wasPressedThisFrame || dpad.down.wasPressedThisFrame ||
                  dpad.left.wasPressedThisFrame || dpad.right.wasPressedThisFrame))
