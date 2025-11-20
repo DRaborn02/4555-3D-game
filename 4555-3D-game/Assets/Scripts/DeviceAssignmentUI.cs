@@ -78,8 +78,10 @@ public class DeviceAssignmentUI : MonoBehaviour
         deviceAssignPanel.SetActive(false);
 
         deviceManager.assignedDevices.Clear();
+        deviceManager.keyboardMouseAssigned = false; // reset the flag
         RefreshUI();
     }
+
 
     public void RefreshUI()
     {
